@@ -1,0 +1,29 @@
+<h4 class="text-center">Administrar Capas</h4>
+
+<app-buscar-capas 
+	[categorias]="categorias"
+	(capaCambiada)="agregarCapa($event)" 
+	(capaActualizada)="actualizarCapa($event)" 
+	(capaEliminada)="eliminarCapa($event)" 
+	*ngIf="!crearActivado && !editarActivado && !borrarActivado">
+</app-buscar-capas>
+
+<app-actualizar-capas 
+	(edicionTerminada)="terminarEdicion()" 
+	[categorias]="categorias" 
+	[capa]="capa" 
+	*ngIf="editarActivado">
+</app-actualizar-capas>
+
+<app-eliminar-capas 
+	(borradoTerminado)="terminarBorrado()" 
+	[categorias]="categorias"
+	[capa]="capa" 
+	*ngIf="borrarActivado">
+</app-eliminar-capas>
+
+<app-crear-capas 
+	(creacionTerminada)="terminarCreacion()" 
+	[capa]="capa" 
+	*ngIf="crearActivado">
+</app-crear-capas>

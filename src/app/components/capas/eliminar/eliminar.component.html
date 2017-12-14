@@ -1,0 +1,75 @@
+<div class="row">
+<div class="col-12">
+
+	<h4 class="text-center text-danger">¿Está seguro de querer eliminar esta capa?</h4>
+	
+	<form class="form" (submit)="eliminarCapa()">
+		<fieldset class="form-group" disabled>
+		<legend>Infomacion de Capa</legend>
+
+		<div class="row">
+			<div class="form-group col"></div>
+			<div class="form-group col-auto">
+				<label class="control-label" for="categoria">Categoria</label>
+				<select class="form-control" name="categoria" [(ngModel)]="capa.categoria">
+					<option value="" selected disabled></option>
+					<option *ngFor="let cat of categorias" [value]="cat.nombre">{{cat.nombre}}</option>
+				</select>
+			</div>
+			<div class="form-group col-auto">
+				<label class="control-label" for="nombre">Nombre</label>
+				<input type="text" class="form-control" name="nombre" [(ngModel)]="capa.nombre" >
+			</div>
+			<div class="form-group col-auto">
+				<label class="control-label" for="geometria">Geometria</label>
+				<input type="text" class="form-control" name="geometria" [(ngModel)]="capa.geometria" disabled>
+			</div>
+			<div class="col"></div>
+		</div>
+
+		<div class="row">
+			<div class="col"></div>
+
+			<div class="col-auto">
+				
+				<table class="table table-striped table-hover table-responsive">
+				  <caption>Propiedades de la Capa</caption>
+
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Propiedad</th>
+				      <th scope="col">Tipo</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr *ngFor="let propiedad of capa.propiedades; let i = index; ">
+				      <th scope="row">{{i+1}}</th>
+				      <td>{{propiedad.nombre}}</td>
+				      <td>{{propiedad.tipo}}</td>
+				    </tr>			    
+				  </tbody>
+				</table>
+
+			</div>
+
+			<div class="col"></div>
+
+		</div>
+
+		</fieldset>		
+
+		<div class="row">
+			<div class="col-auto">
+				<input type="submit" class="btn btn-success" value="Eliminar">
+			</div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-danger" (click)="terminarBorrado()">Cancelar</button>
+			</div>
+			<div class="col"></div>
+		</div>
+
+	</form>
+
+</div>
+</div>
