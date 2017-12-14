@@ -1,0 +1,26 @@
+<h4 class="text-center">Administrar Categorias</h4>
+
+<app-crear-categorias 
+	(creacionTerminada)="terminarCreacion()" 
+	[categoria]="categoria" 
+	*ngIf="crearActivado">
+</app-crear-categorias>
+
+<app-actualizar-categorias 
+	(edicionTerminada)="terminarEdicion()" 
+	[categoria]="categoria" 
+	*ngIf="editarActivado">
+</app-actualizar-categorias>
+
+<app-eliminar-categorias 
+	(borradoTerminado)="terminarBorrado()" 
+	[categoria]="categoria" 
+	*ngIf="borrarActivado">
+</app-eliminar-categorias>
+
+<app-buscar-categorias 
+	(categoriaCambiada)="agregarCategoria($event)" 
+	(categoriaActualizada)="actualizarCategoria($event)" 
+	(categoriaEliminada)="eliminarCategoria($event)" 
+	*ngIf="!crearActivado && !editarActivado && !borrarActivado">
+</app-buscar-categorias>
