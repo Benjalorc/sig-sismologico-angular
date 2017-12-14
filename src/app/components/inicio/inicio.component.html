@@ -1,15 +1,30 @@
 <div class="push">
-
+<flash-messages></flash-messages>
 
 	
 		<div id="mapid"></div>
 
 <div class="row">
-	<div class="col-xs-8"></div>
-	<div class="col-xs-2">
-		<input type="file" name="geojsonGetter" (change)="cargarGeojson($event.target)">
+	<div class="col-auto">
+		<button type="button" class="btn btn-info" *ngIf="!agregarDatosActivado" (click)="agregarDatos()">Agregar Datos</button>
 	</div>
+	<div class="col-auto">
+		<input type="file" name="geojsonGetter" *ngIf="!agregarDatosActivado" (change)="cargarGeojson($event.target)">
+	</div>
+	<div class="col"></div>
 </div>
+
+
+<app-agregar-datos 
+(agregarTerminado)="terminarAgregar($event)"
+[categorias]="categorias" 
+[capas]="capas"
+*ngIf="agregarDatosActivado">	
+</app-agregar-datos>
+
+
+
+
 
 
 

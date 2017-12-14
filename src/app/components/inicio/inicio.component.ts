@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { CategoriasService } from '../../services/categorias/categorias.service'
+import { CapasService } from '../../services/capas/capas.service'
+import { FlashMessagesService } from 'angular2-flash-messages';
 import * as L from 'leaflet';
 
 @Component({
@@ -8,24 +11,203 @@ import * as L from 'leaflet';
 })
 export class InicioComponent implements OnInit {
 
-  constructor() { }
 
 
   activeMap: any;
-  capas: any;
   geoJsons: any;
 
   baseMaps: any;
   overlayMaps: any;
   control: any;
 
+
+
+  
+
+  agregarDatosActivado: boolean;
+  capas: any;
+  categorias: any;
+
+
+  constructor(
+  			private flashMessage: FlashMessagesService
+  			private categoriasService: CategoriasService,
+  			private capasService: CapasService) { }
+
   ngOnInit() {
+
+
+	this.flashMessage.show('Bienvenido!', { cssClass: 'alert-success', timeout: 1000 });
+
+    eval("window.yo = this");
+
+  	this.agregarDatosActivado = false;
+
+	this.categoriasService.obtener().subscribe(data =>{
+
+		if(data.code == 200){			
+			this.categorias = data.data;
+		}
+		else{
+		  	this.categorias = [];
+		}
+	},
+		error => {
+			console.log(error);
+		}
+	);
+
+	this.categorias = [
+		{
+			codigo: "1",
+			nombre: "Categoria 1",
+			descripcion: "Descripcion 1",
+			eliminable: false
+		},
+		{
+			codigo: "2",
+			nombre: "Categoria 2",
+			descripcion: "Descripcion 2",
+			eliminable: true
+		},
+		{
+			codigo: "3",
+			nombre: "Categoria 3",
+			descripcion: "Descripcion 3",
+			eliminable: false
+		}
+	]
+
+
+	this.capasService.obtener().subscribe(data =>{
+
+		if(data.code == 200){			
+			this.capas = data.data;
+		}
+		else{
+		  	this.capas = [];
+		}
+	},
+		error => {
+			console.log(error);
+		}
+	);
+
+	this.capas = [
+		{
+			categoria: "Categoria 1",
+			nombre: "Capa 1",
+			geometria: "PUNTO",
+			eliminable: false,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{ 
+				nombre: "fundacion",
+				tipo: "number"
+				}
+			]
+		},
+		{
+			categoria: "Categoria 1",
+			nombre: "Capa 2",
+			geometria: "POLIGONO",
+			eliminable: false,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{ 
+				nombre: "extension",
+				tipo: "number"
+				}
+			]		},
+		{
+			categoria: "Categoria 2",
+			nombre: "Capa 3",
+			geometria: "LINEA",
+			eliminable: false,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{ 
+				nombre: "largo",
+				tipo: "number"
+				}
+			]		
+		},
+		{
+			categoria: "Categoria 2",
+			nombre: "Capa 4",
+			geometria: "POLIGONO",
+			eliminable: true,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{ 
+				nombre: "altura",
+				tipo: "number"
+				}
+			]		
+		},
+		{
+			categoria: "Categoria 3",
+			nombre: "Capa 5",
+			geometria: "PUNTO",
+			eliminable: false,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{ 
+				nombre: "tipo",
+				tipo: "text"
+				}
+			]		
+		},
+		{
+			categoria: "Categoria 3",
+			nombre: "Capa 6",
+			geometria: "LINEA",
+			eliminable: true,
+			propiedades: 
+			[
+				{ 
+				nombre: "nombre",
+				tipo: "text"
+				},				
+				{
+				nombre: "kilometros",
+				tipo: "number"
+				}
+			]		
+		}
+	]
+
+
+
+
+
+
+
 
   	this.control = [];
   	this.baseMaps = {};
   	this.overlayMaps = {};
   	this.geoJsons = [];
-  	this.capas = [];
 	this.initDraw();
 	eval("window.yo = this");
   }
@@ -235,6 +417,19 @@ export class InicioComponent implements OnInit {
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
 
 	this.geoJsons.push(geoJson);
+  }
+
+  agregarDatos(){
+
+  	this.agregarDatosActivado = true;
+  }
+
+  terminarAgregar(ev){
+
+  	if(ev){
+  		this.agregarDatosActivado = false;
+  	}
+
   }
 
 }
