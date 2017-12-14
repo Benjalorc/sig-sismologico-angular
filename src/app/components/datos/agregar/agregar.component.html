@@ -1,0 +1,78 @@
+<div class="row">
+<div class="col-12">
+
+	<h4 class="text-center">Agregar Datos</h4>
+	
+	<form class="form" (submit)="agregarDato()">
+		
+
+		<fieldset class="form-group">
+		<legend>Infomacion del Dato</legend>
+
+		<div class="row">
+			<div class="form-group col"></div>
+
+			<div class="form-group col-auto">
+				<label class="control-label" for="categoria">Categoria</label>
+				<select class="form-control" name="categoria" [(ngModel)]="categoria" (change)="filtrarCapas()">
+					<option value="" selected disabled></option>
+					<option *ngFor="let cat of categorias" [value]="cat.nombre">{{cat.nombre}}</option>
+				</select>
+			</div>			
+
+			<div class="form-group col-auto">
+				<label class="control-label" for="capa">Capa</label>
+				<select class="form-control" name="capa" [(ngModel)]="capa" (change)="elegirCapa()">
+					<option value="" selected disabled></option>
+					<option *ngFor="let cap of capasFiltradas" [value]="cap.nombre">{{cap.nombre}}</option>
+				</select>
+			</div>			
+
+			<div class="col"></div>
+		</div>
+
+		<div class="row">
+			<div class="col"></div>
+
+			<div class="col-auto">
+				
+				<table class="table table-striped table-hover table-responsive">
+				  <caption>Propiedades de la Capa</caption>
+
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Propiedad</th>
+				      <th scope="col">Valor</th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr *ngFor="let propiedad of capaActiva.propiedades; let i = index; ">
+				      <th scope="row">{{i+1}}</th>
+				      <td>{{propiedad.nombre}}</td>
+				      <td><input [type]="propiedad.tipo" [name]="propiedad.nombre"></td>
+				    </tr>			    
+				  </tbody>
+				</table>
+
+			</div>
+
+			<div class="col"></div>
+		</div>
+
+		</fieldset>		
+
+		<div class="row">
+			<div class="col-auto">
+				<input type="submit" class="btn btn-success" value="Enviar">
+			</div>
+			<div class="col-auto">
+				<button type="button" class="btn btn-danger" (click)="terminarAgregar()">Cancelar</button>
+			</div>
+			<div class="col"></div>
+		</div>
+
+	</form>
+
+</div>
+</div>
