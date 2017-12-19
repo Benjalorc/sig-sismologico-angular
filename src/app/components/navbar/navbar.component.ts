@@ -12,6 +12,9 @@ export class NavbarComponent implements OnInit {
 
   public isCollapsed = true;
 
+
+  loading: boolean;
+
   categorias: any;
   capas: any;
 
@@ -60,8 +63,11 @@ export class NavbarComponent implements OnInit {
     
     let file = evento.target.files[0];
     console.log(file);
-    
+
+    this.loading = true;
     this.capasService.importar(file).subscribe(data =>{
+    this.loading = false;
+
         if(data.status == 200){     
 
         }
@@ -93,7 +99,11 @@ export class NavbarComponent implements OnInit {
   traerCapa(nombre){
 
     console.log(nombre);
+
+    this.loading = true;
     this.capasService.traer(nombre).subscribe(data =>{
+    this.loading = true;
+
         if(data.status == 200){     
 
           window.localStorage.capaNueva = JSON.stringify(data.body);

@@ -9,7 +9,7 @@ import { CapasService } from '../../../services/capas/capas.service'
 })
 export class BuscarCapasComponent implements OnInit {
 
-	
+	loading: boolean;	
 	capas: any;
 	capaNueva: any;
 
@@ -27,6 +27,7 @@ export class BuscarCapasComponent implements OnInit {
 
   	eval("window.yo2 = this");
 
+  	this.loading = false;
   	this.capaNueva = {
   		categoria: "",
   		nombre: "",
@@ -92,7 +93,9 @@ export class BuscarCapasComponent implements OnInit {
 
   cargarCapas(){
 
+  	this.loading = true;
 	this.capasService.obtener().subscribe(data =>{
+  	this.loading = false;
 
 		if(data.status == 200){	
 			console.log(data);
@@ -139,7 +142,11 @@ export class BuscarCapasComponent implements OnInit {
   	
   	let file = evento.target.files[0];
   	console.log(file);
+
+  	this.loading = true;
 	this.capasService.importar(file).subscribe(data =>{
+  	this.loading = false;
+
   		if(data.status == 200){			
   			this.cargarCapas();
   		}

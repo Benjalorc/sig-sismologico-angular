@@ -9,6 +9,8 @@ import { CategoriasService } from '../../../services/categorias/categorias.servi
 })
 export class CrearCapasComponent implements OnInit {
 
+  loading: boolean;
+
   capaNueva: any;
 
   propiedadNueva: any;
@@ -24,6 +26,8 @@ export class CrearCapasComponent implements OnInit {
 
   ngOnInit() {
 
+    this.loading = false;
+
   	this.propiedadNueva = {
   		nombre: "",
   		tipo: ""
@@ -31,8 +35,9 @@ export class CrearCapasComponent implements OnInit {
 
     this.capaNueva = this.capa;
 
-
+    this.loading = true;
   	this.categoriasService.obtener().subscribe(data =>{
+    this.loading = false;
 
   		if(data.status == 200){			
 
@@ -89,7 +94,9 @@ export class CrearCapasComponent implements OnInit {
 
     console.log(this.capaNueva);
 
+    this.loading = false;
     this.capasService.agregar(this.capaNueva).subscribe(data =>{
+    this.loading = true;
 
         if(data.status == 201){
 

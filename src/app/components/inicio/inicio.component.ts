@@ -28,6 +28,8 @@ export class InicioComponent implements OnInit {
   capas: any;
   categorias: any;
 
+  loading: boolean;
+
 
   constructor(
   			private flashMessage: FlashMessagesService,
@@ -37,6 +39,8 @@ export class InicioComponent implements OnInit {
   ngOnInit() {
 
 
+  	this.loading = false;
+
 	this.flashMessage.show('Bienvenido!', { cssClass: 'alert-success', timeout: 1000 });
 
     eval("window.yo = this");
@@ -45,7 +49,9 @@ export class InicioComponent implements OnInit {
   	this.editarDatosActivado = false;
   	this.eliminarDatosActivado = false;
 
+  	this.loading = true;
 	this.categoriasService.obtener().subscribe(data =>{
+  	this.loading = false;
 
 		if(data.status == 200){			
 			this.categorias = data.body;
@@ -82,7 +88,9 @@ export class InicioComponent implements OnInit {
 	]
 
 
+  	this.loading = true;
 	this.capasService.obtener().subscribe(data =>{
+  	this.loading = false;
 
 		if(data.status == 200){
 			this.capas = data.body;

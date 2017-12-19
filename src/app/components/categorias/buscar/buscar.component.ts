@@ -10,6 +10,7 @@ export class BuscarCategoriasComponent implements OnInit {
 
 	categorias: any;
 	categoriaNueva: any;
+	loading: boolean;
 
 	@Output() categoriaCambiada = new EventEmitter<any>();
 	@Output() categoriaActualizada = new EventEmitter<any>();
@@ -21,12 +22,16 @@ export class BuscarCategoriasComponent implements OnInit {
 
   ngOnInit() {
 
+  	this.loading = false;
+
   	this.categoriaNueva = {
   		nombre: "",
   		descripcion: ""
   	}
 
+  	this.loading = true;
 	this.categoriasService.obtener().subscribe(data =>{
+  	this.loading = false;
 		console.log(data)
 		if(data.status == 200){
 		

@@ -8,6 +8,8 @@ import { CapasService } from '../../../services/capas/capas.service'
 })
 export class EliminarCapasComponent implements OnInit {
 
+  loading: boolean;
+
   @Input() categorias: any;
   @Input() capa: any;
   @Output() borradoTerminado = new EventEmitter<boolean>();
@@ -15,6 +17,8 @@ export class EliminarCapasComponent implements OnInit {
   constructor(private capasService: CapasService) { }
 
   ngOnInit() {
+
+    this.loading = false;
   }
 
   terminarBorrado(){
@@ -23,7 +27,9 @@ export class EliminarCapasComponent implements OnInit {
 
   eliminarCapa(){
 
+    this.loading = true;
     this.capasService.eliminar(this.capa).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 204){
 

@@ -8,6 +8,7 @@ import { CategoriasService } from '../../../services/categorias/categorias.servi
 })
 export class CrearCategoriasComponent implements OnInit {
 
+  loading: boolean;
   categoriaNueva: any;
 
   @Input() categoria: any;
@@ -16,6 +17,7 @@ export class CrearCategoriasComponent implements OnInit {
   constructor(private categoriasService: CategoriasService) { }
 
   ngOnInit() {
+    this.loading = false;
     this.categoriaNueva = this.categoria;
   }
 
@@ -33,7 +35,9 @@ export class CrearCategoriasComponent implements OnInit {
       return false;
     }
 
+    this.loading = true;
     this.categoriasService.agregar(this.categoriaNueva).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 201){
 

@@ -8,6 +8,8 @@ import { CapasService } from '../../../services/capas/capas.service'
 })
 export class ActualizarCapasComponent implements OnInit {
 
+  loading: boolean;
+
   @Input() categorias: any;
   @Input() capa: any;
   @Output() edicionTerminada = new EventEmitter<boolean>();
@@ -19,6 +21,8 @@ export class ActualizarCapasComponent implements OnInit {
   ngOnInit() {
 
     eval("window.yo = this");
+
+    this.loading = false;
 
   	this.propiedadNueva = {
   		nombre: "",
@@ -77,7 +81,9 @@ export class ActualizarCapasComponent implements OnInit {
       return false;
     }
 
+    this.loading = true;
     this.capasService.actualizar(this.capa).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 200){
 

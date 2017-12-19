@@ -9,12 +9,15 @@ import { CategoriasService } from '../../../services/categorias/categorias.servi
 
 export class EliminarCategoriasComponent implements OnInit {
 
+  loading: boolean;
+  
   @Input() categoria: any;
   @Output() borradoTerminado = new EventEmitter<boolean>();
 
   constructor(private categoriasService: CategoriasService) { }
 
   ngOnInit() {
+    this.loading = false;
   }
 
   terminarBorrado(){
@@ -31,7 +34,9 @@ export class EliminarCategoriasComponent implements OnInit {
       return false;
     }
 
+    this.loading = true;
     this.categoriasService.eliminar(this.categoria).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 204){
 

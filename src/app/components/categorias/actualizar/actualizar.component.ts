@@ -8,12 +8,16 @@ import { CategoriasService } from '../../../services/categorias/categorias.servi
 })
 export class ActualizarCategoriasComponent implements OnInit {
 
+  loading: boolean;
+
   @Input() categoria: any;
   @Output() edicionTerminada = new EventEmitter<boolean>();
 
   constructor(private categoriasService: CategoriasService) { }
 
   ngOnInit() {
+
+    this.loading = false;
   }
 
   terminarEdicion(){
@@ -30,7 +34,9 @@ export class ActualizarCategoriasComponent implements OnInit {
       return false;
     }
 
+    this.loading = true;
     this.categoriasService.actualizar(this.categoria).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 200){
 
