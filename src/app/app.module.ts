@@ -39,7 +39,7 @@ import { DatosService } from './services/datos/datos.service';
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
   { path: 'categorias', component: CategoriasComponent},
-  { path: 'capas', component: CapasComponent}
+  { path: 'capas', component: CapasComponent},
   { path: 'datos', component: DatosComponent}
 ]
 
