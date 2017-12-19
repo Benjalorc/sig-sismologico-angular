@@ -1,14 +1,20 @@
+
 <div class="container">
-	
+  
 
 
 <div class="row">
 <div class="col-xs-12">
+
+<input type="file" name="file" id="geojsonfile" style="display: none" (change)="cargarGeojson($event)">
+<button type="button" id="montar" style="display: none" (click)="montarDatos()"></button>
 	
 
 
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">Navbar</a>
+
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <a class="navbar-brand" routerLink="/">CSUDO</a>      
+
       <button class="navbar-toggler" type="button" (click)="collapse()" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -16,26 +22,32 @@
       <div class="collapse navbar-collapse" id="navbarsExampleDefault" [ngbCollapse]="isCollapsed">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
-            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
+            <a class="nav-link" routerLink="/">Inicio <span class="sr-only">(current)</span></a>
           </li>
           <li class="nav-item dropdown" ngbDropdown>
-            <a class="nav-link dropdown-toggle" id="dropdown01" ngbDropdownToggle  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <a class="nav-link dropdown-toggle" id="dropdown01" ngbDropdownToggle  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Administrar</a>
             <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="dropdown01">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" routerLink="/categorias">Categorias</a>
+              <a class="dropdown-item" routerLink="/capas">Capas</a>
+              <a class="dropdown-item" (click)="abrirSelectorArchivo();" >Importar Capas</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown" ngbDropdown *ngIf="router.url == '/'">
+            <a class="nav-link dropdown-toggle" id="dropdown01" ngbDropdownToggle  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Categorias</a>
+            <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="dropdown01">
+              <a class="dropdown-item" *ngFor="let cat of categorias" (click)="filtrarCapas(cat.id)">{{cat.nombre}}</a>
+            </div>
+          </li>
+          <li class="nav-item dropdown" ngbDropdown *ngIf="router.url == '/'">
+            <a class="nav-link dropdown-toggle" id="dropdown01" ngbDropdownToggle  data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Capas</a>
+            <div class="dropdown-menu" ngbDropdownMenu aria-labelledby="dropdown01">
+              <a class="dropdown-item" *ngFor="let cap of capasFiltradas" (click)="traerCapa(cap.nombre)">{{cap.nombre}}</a>
             </div>
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          <button class="btn btn-outline-info my-2 my-sm-0"><i class="fa fa-address-book-o" aria-hidden="true"></i>Registrar</button>
+          <button class="btn btn-outline-success my-2 my-sm-0"><i class="fa fa-sign-in" aria-hidden="true"></i>Entrar</button>
         </form>
       </div>
     </nav>

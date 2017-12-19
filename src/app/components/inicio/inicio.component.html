@@ -1,17 +1,22 @@
+		<div id="mapid" class="row-full"></div>
 <div class="push">
 <flash-messages></flash-messages>
 
-	
-		<div id="mapid"></div>
+	<button type="button" id="mostrarCapaNueva" style="display: none" (click)="cargarGeojsonFromLocal()"></button>
+
 
 <div class="row">
-	<div class="col-auto">
-		<button type="button" class="btn btn-info" *ngIf="!agregarDatosActivado" (click)="agregarDatos()">Agregar Datos</button>
+	<div class="col">
+		<button type="button" class="btn btn-outline-success" *ngIf="!agregarDatosActivado && !editarDatosActivado && !eliminarDatosActivado" (click)="agregarDatos()">Agregar Datos</button>
 	</div>
-	<div class="col-auto">
-		<input type="file" name="geojsonGetter" *ngIf="!agregarDatosActivado" (change)="cargarGeojson($event.target)">
+<!--
+	<div class="col">
+		<button type="button" class="btn btn-outline-warning" *ngIf="!agregarDatosActivado && !editarDatosActivado && !eliminarDatosActivado" (click)="editarDatos()">Editar Datos</button>
 	</div>
-	<div class="col"></div>
+	<div class="col">
+		<button type="button" class="btn btn-outline-danger" *ngIf="!agregarDatosActivado && !editarDatosActivado && !eliminarDatosActivado" (click)="eliminarDatos()">Eliminar Datos</button>
+	</div>
+-->	
 </div>
 
 
@@ -21,10 +26,6 @@
 [capas]="capas"
 *ngIf="agregarDatosActivado">	
 </app-agregar-datos>
-
-
-
-
 
 
 

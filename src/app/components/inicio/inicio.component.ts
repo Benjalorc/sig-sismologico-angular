@@ -12,7 +12,6 @@ import * as L from 'leaflet';
 export class InicioComponent implements OnInit {
 
 
-
   activeMap: any;
   geoJsons: any;
 
@@ -21,16 +20,17 @@ export class InicioComponent implements OnInit {
   control: any;
 
 
-
-  
-
   agregarDatosActivado: boolean;
+  editarDatosActivado: boolean;
+  eliminarDatosActivado: boolean;
+
+
   capas: any;
   categorias: any;
 
 
   constructor(
-  			private flashMessage: FlashMessagesService
+  			private flashMessage: FlashMessagesService,
   			private categoriasService: CategoriasService,
   			private capasService: CapasService) { }
 
@@ -42,11 +42,14 @@ export class InicioComponent implements OnInit {
     eval("window.yo = this");
 
   	this.agregarDatosActivado = false;
+  	this.editarDatosActivado = false;
+  	this.eliminarDatosActivado = false;
 
 	this.categoriasService.obtener().subscribe(data =>{
 
-		if(data.code == 200){			
-			this.categorias = data.data;
+		if(data.status == 200){			
+			this.categorias = data.body;
+			window.localStorage.categorias = JSON.stringify(this.categorias);
 		}
 		else{
 		  	this.categorias = [];
@@ -81,8 +84,25 @@ export class InicioComponent implements OnInit {
 
 	this.capasService.obtener().subscribe(data =>{
 
-		if(data.code == 200){			
-			this.capas = data.data;
+		if(data.status == 200){
+			this.capas = data.body;
+
+			console.log(this.capas);
+
+			this.capas.forEach((element) =>{
+
+				if(!element.categoria){
+					element.categoria = {
+						nombre: "N/A",
+						id: ""
+					}
+				}
+
+				element.geometria = element.tipo;
+
+			});
+
+			window.localStorage.capas = JSON.stringify(this.capas);
 		}
 		else{
 		  	this.capas = [];
@@ -98,6 +118,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 1",
 			nombre: "Capa 1",
 			geometria: "PUNTO",
+			coordenadas: [],
 			eliminable: false,
 			propiedades: 
 			[
@@ -115,6 +136,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 1",
 			nombre: "Capa 2",
 			geometria: "POLIGONO",
+			coordenadas: [],
 			eliminable: false,
 			propiedades: 
 			[
@@ -131,6 +153,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 2",
 			nombre: "Capa 3",
 			geometria: "LINEA",
+			coordenadas: [],
 			eliminable: false,
 			propiedades: 
 			[
@@ -148,6 +171,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 2",
 			nombre: "Capa 4",
 			geometria: "POLIGONO",
+			coordenadas: [],
 			eliminable: true,
 			propiedades: 
 			[
@@ -165,6 +189,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 3",
 			nombre: "Capa 5",
 			geometria: "PUNTO",
+			coordenadas: [],
 			eliminable: false,
 			propiedades: 
 			[
@@ -182,6 +207,7 @@ export class InicioComponent implements OnInit {
 			categoria: "Categoria 3",
 			nombre: "Capa 6",
 			geometria: "LINEA",
+			coordenadas: [],
 			eliminable: true,
 			propiedades: 
 			[
@@ -198,18 +224,13 @@ export class InicioComponent implements OnInit {
 	]
 
 
-
-
-
-
-
-
   	this.control = [];
   	this.baseMaps = {};
   	this.overlayMaps = {};
   	this.geoJsons = [];
 	this.initDraw();
 	eval("window.yo = this");
+  	document.getElementById("montar").click();
   }
 
 
@@ -245,33 +266,103 @@ export class InicioComponent implements OnInit {
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
 	
 	this.activeMap.on("click", (ev) =>{
-		console.log(ev.latlng);
+		this.addPointToArr(ev.latlng.lng, ev.latlng.lat);		
 	});
 
 
   }
 
-  cargarGeojson(data){
+  addPointToArr(lng, lat){
 
-  	let fr = new FileReader();
+  	let tipo = "";
+	let coordenadas = [];
 
-  	fr.addEventListener("load", (e)=>{
+  	if(window.localStorage.capaActiva){
 
-		let geoJson = JSON.parse(e.target["result"]);
+	  	tipo = JSON.parse(window.localStorage.capaActiva).geometria;
 
-  		try{
-  			if(!this.verificarGeojsonExistente(geoJson)){
-  			  	this.addOverlayToControl(geoJson);
-  			}
+	  	if(window.localStorage.coordenadas){
+
+	  		coordenadas = JSON.parse(window.localStorage.coordenadas);
+
+	  		switch(tipo){
+
+	  			case "Point":
+				  	coordenadas = [lng, lat];
+			  		window.localStorage.coordenadas = JSON.stringify(coordenadas);
+	  			break;
+
+	  			case "LineString":
+
+		  			if(coordenadas.length < 1){
+
+				  		coordenadas.push([lng, lat]);
+		  			}
+		  			else{
+
+				  		coordenadas = [lng, lat];	  				
+		  			}
+		  			window.localStorage.coordenadas = JSON.stringify(coordenadas);
+	  			break;
+
+	  			case "Polygon":
+
+		  			if(coordenadas.length < 1){
+
+				  		coordenadas.push([lng, lat]);
+		  			}
+		  			else{
+
+				  		coordenadas = [lng, lat];	  				
+		  			}
+		  			window.localStorage.coordenadas = JSON.stringify(coordenadas);
+	  			break;
+	  		}
+
+
+	  	}
+	  	else{
+	  		coordenadas = [lng, lat];
+	  		console.log(coordenadas);
+	  		window.localStorage.coordenadas = JSON.stringify(coordenadas);
+	  	}
+
+  	}
+  	else{
+
+  		return false;
+  	}
+
+  }
+
+  cargarGeojson(geoJson){
+
+
+  	try{
+  		if(!this.verificarGeojsonExistente(geoJson)){
+			this.addOverlayToControl(geoJson);
   		}
-  		catch(err){
-  			console.log(err);
+  		else{
+  			console.log("Repetido");
   		}
+  	}
+  	catch(err){
+  		console.log(err);
+  	}
+  }  
 
-  	}, false);
+  cargarGeojsonFromLocal(){
 
-  	console.log(data.files);
-  	fr.readAsText(data.files[0]);
+  	let geoJson = JSON.parse(window.localStorage.capaNueva);
+
+  	try{
+  		if(!this.verificarGeojsonExistente(geoJson)){
+			this.addOverlayToControl(geoJson);
+  		}
+  	}
+  	catch(err){
+  		console.log(err);
+  	}
   }
 
 
@@ -281,7 +372,7 @@ export class InicioComponent implements OnInit {
 
   	geoJson.features.forEach((element) =>{
 
-  		let nuevo = element.properties.name;
+  		let nuevo = element.name;
 
   		this.geoJsons.forEach((element) =>{
 
@@ -420,7 +511,7 @@ export class InicioComponent implements OnInit {
   }
 
   agregarDatos(){
-
+  	document.getElementById("montar").click();
   	this.agregarDatosActivado = true;
   }
 
@@ -428,6 +519,34 @@ export class InicioComponent implements OnInit {
 
   	if(ev){
   		this.agregarDatosActivado = false;
+  	}
+
+  }
+
+  editarDatos(){
+
+  	document.getElementById("montar").click();
+  	this.editarDatosActivado = true;
+  }
+
+  terminarEditar(ev){
+
+  	if(ev){
+  		this.editarDatosActivado = false;
+  	}
+
+  }
+
+  eliminarDatos(){
+
+  	document.getElementById("montar").click();
+  	this.eliminarDatosActivado = true;
+  }
+
+  terminarEliminar(ev){
+
+  	if(ev){
+  		this.eliminarDatosActivado = false;
   	}
 
   }
