@@ -10,29 +10,46 @@ export class CapasService {
     constructor(
         public http: HttpClient
     ){
-        this.url = '';
+        this.url = 'https://gis-entorno-benjamin-s-e.c9users.io:8080/capas';
     }
 
     obtener(): Observable<any>{
-        return this.http.get(this.url+'obtener');
+        return this.http.get(this.url, { observe: 'response' });
     }
 
-	agregar(capa): Observable<any>{
+    traer(nombre): Observable<any>{
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.post(this.url+'agregar', capa, {headers: headers});
+        return this.http.get(this.url+"/tipo="+nombre, { observe: 'response' });
     }
+
+    importar(file): Observable<any>{
+
+        let input = new FormData();
+        input.append('file', file, file.name);
+
+        let headers = new HttpHeaders().set('Content-Type','multipart/form-data');         
+        return this.http.post('https://gis-entorno-benjamin-s-e.c9users.io:8080/importar', input, {headers: headers, observe: 'response'});
+    }
+
+    agregar(capa): Observable<any>{
+
+        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+        return this.http.post(this.url, capa, {headers: headers,  observe: 'response'});
+    }   
+
 
     actualizar(capa): Observable<any>{
 
+        capa.categoria = capa.categoria.id;
+
         let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.put(this.url+'actualizar', capa, {headers: headers});
+        return this.http.put(this.url+'/'+capa.id, capa, {headers: headers, observe: 'response'});
     }
 
     eliminar(capa): Observable<any>{
 
         let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.delete(this.url+'eliminar/'+capa.codigo, {headers: headers});
+        return this.http.delete(this.url+'/'+capa.id, {headers: headers, observe: 'response'});
     }
 
 }

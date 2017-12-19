@@ -3,7 +3,8 @@
 
 	<div class="row">
 
-		<div class="col">
+		<div class="col"></div>
+		<div class="col-auto">
 			
 			<table class="table table-striped table-hover table-responsive">
 			  <caption>Listado de Capas</caption>
@@ -22,31 +23,31 @@
 			  <tbody>
 			    <tr *ngFor="let capa of capas; let i = index; ">
 			      <th scope="row">{{i+1}}</th>
-			      <td>{{capa.categoria}}</td>
+			      <td>{{capa.categoria.nombre}}</td>
 			      <td>{{capa.nombre}}</td>
 			      <td>{{capa.geometria}}</td>
 			      <td><button type="button" class="btn btn-info"><fa name="search"></fa></button></td>
 			      <td><button type="button" class="btn btn-warning" (click)="editarCapa(capa)"><fa name="pencil-square-o"></fa></button></td>
-			      <td><button type="button" class="btn btn-danger" (click)="eliminarCapa(capa)" [disabled]="!capa.eliminable"><fa name="trash-o"></fa></button></td>
+			      <td><button type="button" class="btn btn-danger" (click)="eliminarCapa(capa)" [disabled]=""><fa name="trash-o"></fa></button></td>
 			    </tr>			    
 			    <tr>
 			      <th scope="row">#</th>
 			      <td>
 					<select class="form-control" name="categoria" [(ngModel)]="capaNueva.categoria">
 						<option value="" selected disabled></option>
-						<option *ngFor="let cat of categorias" [value]="cat.nombre">{{cat.nombre}}</option>
+						<option *ngFor="let cat of categorias" [value]="cat.id">{{cat.nombre}}</option>
 					</select>
 			      </td>
 			      <td><input type="text" class="form-control" name="nombre" [(ngModel)]="capaNueva.nombre"></td>
 			      <td>
 					<select class="form-control" name="geometria" [(ngModel)]="capaNueva.geometria">
 						<option value="" selected disabled></option>
-						<option value="PUNTO">PUNTO</option>
-						<option value="LINEA">LINEA</option>
-						<option value="POLIGONO">POLIGONO</option>
-						<option value="MULTIPUNTO">MULTI-PUNTO</option>
-						<option value="MULTILINEA">MULTI-LINEA</option>
-						<option value="MULTIPOLIGONO">MULTI-POLIGONO</option>
+						<option value="Point">PUNTO</option>
+						<option value="LineString">LINEA</option>
+						<option value="Polygon">POLIGONO</option>
+						<option value="MultiPoint">MULTI-PUNTO</option>
+						<option value="MultiLineString">MULTI-LINEA</option>
+						<option value="MultiPolygon">MULTI-POLIGONO</option>
 					</select>			      	
 			      </td>
 			      <td><button type="button" class="btn btn-success" (click)="agregarCapa()"><fa name="plus"></fa></button></td>
@@ -57,8 +58,17 @@
 			</table>
 
 		</div>
+		<div class="col"></div>
+
 
 	</div>
+		
+		<div class="row">
+			<div class="form-group col">
+				<label for="file">Importar Capa</label>
+				<input type="file" name="file" (change)="cargarGeojson($event)">
+			</div>
+		</div>
 
 </div>
 </div>

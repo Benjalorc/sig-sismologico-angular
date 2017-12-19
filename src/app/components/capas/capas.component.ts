@@ -22,36 +22,19 @@ export class CapasComponent implements OnInit {
     this.categorias = [];
 
     this.categoriasService.obtener().subscribe(data =>{
-
-      if(data.code == 200){     
-        this.categorias = data.data;
+      console.log(data)
+      if(data.status == 200){
+      
+        this.categorias = data.body;
       }
       else{
-          this.categorias = [];
+          console.log(data);
       }
     },
       error => {
         console.log(error);
       }
     );
-
-    this.categorias = [{
-        nombre: "Categoria 1",
-        descripcion: "Descripcion 1",
-        eliminable: false
-      },
-      {
-        nombre: "Categoria 2",
-        descripcion: "Descripcion 2",
-        eliminable: true
-      },
-      {
-        nombre: "Categoria 3",
-        descripcion: "Descripcion 3",
-        eliminable: false
-      }
-    ] 
-
 
   	this.crearActivado = false;
   	this.editarActivado = false;

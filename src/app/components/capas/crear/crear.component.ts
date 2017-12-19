@@ -32,40 +32,22 @@ export class CrearCapasComponent implements OnInit {
     this.capaNueva = this.capa;
 
 
-	this.categoriasService.obtener().subscribe(data =>{
+  	this.categoriasService.obtener().subscribe(data =>{
 
-		if(data.code == 200){			
-			this.categorias = data.data;
-		}
-		else{
-		  	this.categorias = [];
-		}
-	},
-		error => {
-			console.log(error);
-		}
-	);
+  		if(data.status == 200){			
 
-	this.categorias = [
-		{
-			codigo: "1",
-			nombre: "Categoria 1",
-			descripcion: "Descripcion 1",
-			eliminable: false
-		},
-		{
-			codigo: "2",
-			nombre: "Categoria 2",
-			descripcion: "Descripcion 2",
-			eliminable: true
-		},
-		{
-			codigo: "3",
-			nombre: "Categoria 3",
-			descripcion: "Descripcion 3",
-			eliminable: false
-		}
-	]
+        console.log(data);
+  			this.categorias = data.body;
+  		}
+  		else{
+  		  	this.categorias = [];
+  		}
+  	},
+  		error => {
+  			console.log(error);
+  		}
+  	);
+
     eval("window.yo = this");
   }
 
@@ -79,11 +61,11 @@ export class CrearCapasComponent implements OnInit {
   		return false;
   	}
 
-  	if( this.capaNueva.propiedades.find((element) =>{return element.nombre == this.propiedadNueva.nombre}) ){
+  	if( this.capaNueva.atributos.find((element) =>{return element.nombre == this.propiedadNueva.nombre}) ){
   		return false;
   	}
 
-  	this.capaNueva.propiedades.push({nombre: this.propiedadNueva.nombre, tipo: this.propiedadNueva.tipo});
+  	this.capaNueva.atributos.push({nombre: this.propiedadNueva.nombre, tipo: this.propiedadNueva.tipo});
 
   	this.propiedadNueva.nombre = "";
   	this.propiedadNueva.tipo = "";
@@ -92,8 +74,8 @@ export class CrearCapasComponent implements OnInit {
 
   removerPropiedad(i){
 
-  	let propiedades = this.capaNueva.propiedades.filter((element) =>{return element.nombre != this.capaNueva.propiedades[i].nombre});
-  	this.capaNueva.propiedades = propiedades;
+  	let propiedades = this.capaNueva.atributos.filter((element) =>{return element.nombre != this.capaNueva.atributos[i].nombre});
+  	this.capaNueva.atributos = propiedades;
   }
 
   terminarCreacion(){
@@ -103,9 +85,13 @@ export class CrearCapasComponent implements OnInit {
 
   crearCapa(){
 
+    this.capaNueva.atributos.push({"nombre": "geom", "tipo":this.capaNueva.geometria});
+
+    console.log(this.capaNueva);
+
     this.capasService.agregar(this.capaNueva).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 201){
 
           this.terminarCreacion();
         }

@@ -25,32 +25,21 @@ export class BuscarCapasComponent implements OnInit {
 
   ngOnInit() {
 
+  	eval("window.yo2 = this");
+
   	this.capaNueva = {
   		categoria: "",
   		nombre: "",
   		geometria: "",
-  		propiedades: []
+  		atributos: []
   	}
 
 
   	this.capas = [];
 
+  	this.cargarCapas();
 
-
-	this.capasService.obtener().subscribe(data =>{
-
-		if(data.code == 200){			
-			this.capas = data.data;
-		}
-		else{
-		  	this.capas = [];
-		}
-	},
-		error => {
-			console.log(error);
-		}
-	);
-
+/*
 	this.capas = [
 		{
 			categoria: "Categoria 1",
@@ -95,9 +84,44 @@ export class BuscarCapasComponent implements OnInit {
 			propiedades: []
 		}
 	]
+*/
+
 
   }//Cierre ngOnInit
 
+
+  cargarCapas(){
+
+	this.capasService.obtener().subscribe(data =>{
+
+		if(data.status == 200){	
+			console.log(data);
+			this.capas = data.body;
+
+			this.capas.forEach((element) =>{
+
+				if(!element.categoria){
+					element.categoria = {
+						nombre: "N/A",
+						id: ""
+					}
+				}
+
+				element.geometria = element.atributos.find((element) =>{return element.nombre=="geom"}).tipo;
+
+			});
+		}
+		else{
+		  	this.capas = [];
+		}
+	},
+		error => {
+			console.log(error);
+		}
+	);
+
+
+  }
 
   agregarCapa(){
 	this.capaCambiada.emit(this.capaNueva);
@@ -110,4 +134,24 @@ export class BuscarCapasComponent implements OnInit {
   eliminarCapa(capa){
   	this.capaEliminada.emit(capa);
   }
+
+  cargarGeojson(evento){
+  	
+  	let file = evento.target.files[0];
+  	console.log(file);
+	this.capasService.importar(file).subscribe(data =>{
+  		if(data.status == 200){			
+  			this.cargarCapas();
+  		}
+  		else{
+  		}
+	  },
+	  error => {
+	  	console.log(error);
+	  }
+	);
+
+  }
+
+
 }

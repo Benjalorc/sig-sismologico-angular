@@ -8,23 +8,21 @@
 		<legend>Infomacion de Capa</legend>
 
 		<div class="row">
-			<div class="form-group col"></div>
-			<div class="form-group col-auto">
+			<div class="form-group col">
 				<label class="control-label" for="categoria">Categoria</label>
-				<select class="form-control" name="categoria" [(ngModel)]="capa.categoria">
+				<select class="form-control" name="categoria" [(ngModel)]="capa.categoria.id">
 					<option value="" selected disabled></option>
-					<option *ngFor="let cat of categorias" [value]="cat.nombre">{{cat.nombre}}</option>
+					<option *ngFor="let cat of categorias" [value]="cat.id">{{cat.nombre}}</option>
 				</select>
 			</div>
-			<div class="form-group col-auto">
+			<div class="form-group col">
 				<label class="control-label" for="nombre">Nombre</label>
 				<input type="text" class="form-control" name="nombre" [(ngModel)]="capa.nombre" >
 			</div>
-			<div class="form-group col-auto">
+			<div class="form-group col">
 				<label class="control-label" for="geometria">Geometria</label>
 				<input type="text" class="form-control" name="geometria" [(ngModel)]="capa.geometria" disabled>
 			</div>
-			<div class="col"></div>
 		</div>
 
 		<div class="row">

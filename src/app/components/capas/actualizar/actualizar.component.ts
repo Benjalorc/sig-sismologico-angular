@@ -18,12 +18,22 @@ export class ActualizarCapasComponent implements OnInit {
 
   ngOnInit() {
 
+    eval("window.yo = this");
+
   	this.propiedadNueva = {
   		nombre: "",
   		tipo: "",
   	}
+
+    console.log(this.capa);
+    console.log(this.categorias);
   }
 
+  cambiarCategoria(){
+
+    this.capa.categoria = this.categorias.find((element) =>{return element.id == this.capa.categoria.id});
+
+  }
 
   agregarPropiedad(){
 
@@ -69,12 +79,11 @@ export class ActualizarCapasComponent implements OnInit {
 
     this.capasService.actualizar(this.capa).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 200){
 
           this.terminarEdicion();
         }
         else{
-
 
         }
       },

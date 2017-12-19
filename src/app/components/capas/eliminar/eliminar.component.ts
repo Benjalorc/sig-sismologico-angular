@@ -25,13 +25,13 @@ export class EliminarCapasComponent implements OnInit {
 
     this.capasService.eliminar(this.capa).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 204){
 
           this.terminarBorrado();
         }
         else{
 
-
+          console.log(data);
         }
       },
       error => {
