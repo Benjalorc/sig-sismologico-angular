@@ -32,7 +32,7 @@ export class ActualizarCategoriasComponent implements OnInit {
 
     this.categoriasService.actualizar(this.categoria).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 200){
 
           this.terminarEdicion();
         }

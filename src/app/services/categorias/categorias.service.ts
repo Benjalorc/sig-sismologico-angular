@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
@@ -10,29 +10,32 @@ export class CategoriasService {
     constructor(
         public http: HttpClient
     ){
-        this.url = '';
+        this.url = 'https://gis-entorno-benjamin-s-e.c9users.io:8080/categorias';
     }
 
 	obtener(): Observable<any>{
-	    return this.http.get(this.url+'obtener');
+
+	    return this.http.get(this.url, { observe: 'response' });
 	}
 
 	agregar(categoria): Observable<any>{
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.post(this.url+'agregar', categoria, {headers: headers});
+        let headers = new HttpHeaders().set('Content-Type','application/json');
+        let hola = this.http.post(this.url, categoria, {headers: headers, observe: 'response'});
+        console.log(hola);
+        return hola;
     }
 
 	actualizar(categoria): Observable<any>{
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.put(this.url+'actualizar', categoria, {headers: headers});
+        let headers = new HttpHeaders().set('Content-Type','application/json');         
+        return this.http.put(this.url+'/'+categoria.id, categoria, {headers: headers, observe: 'response'});
     }
 
 	eliminar(categoria): Observable<any>{
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
-        return this.http.delete(this.url+'eliminar/'+categoria.codigo, {headers: headers});
+        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+        return this.http.delete(this.url+'/'+categoria.id, {headers: headers,  observe: 'response'});
     }
  
 }

@@ -24,15 +24,15 @@
 			      <th scope="row">{{i+1}}</th>
 			      <td>{{categoria.nombre}}</td>
 			      <td>{{categoria.descripcion}}</td>
-			      <td><button type="button" class="btn btn-info"><fa name="search"></fa></button></td>
-			      <td><button type="button" class="btn btn-warning" (click)="editarCategoria(categoria)"><fa name="pencil-square-o"></fa></button></td>
-			      <td><button type="button" class="btn btn-danger" (click)="eliminarCategoria(categoria)" [disabled]="!categoria.eliminable"><fa name="trash-o"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-info"><fa name="search"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-warning" (click)="editarCategoria(categoria)"><fa name="pencil-square-o"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-danger" (click)="eliminarCategoria(categoria)" [disabled]="!categoria.eliminable"><fa name="trash-o"></fa></button></td>
 			    </tr>			    
 			    <tr>
 			      <th scope="row">#</th>
 			      <td><input type="text" class="form-control" [(ngModel)]="categoriaNueva.nombre"></td>
 			      <td><textarea type="text" class="form-control" [(ngModel)]="categoriaNueva.descripcion"></textarea> </td>
-			      <td><button type="button" class="btn btn-success" (click)="agregarCategoria()"><fa name="plus"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-success" (click)="agregarCategoria()"><fa name="plus"></fa></button></td>
 			      <td></td>
 			      <td></td>
 			    </tr>

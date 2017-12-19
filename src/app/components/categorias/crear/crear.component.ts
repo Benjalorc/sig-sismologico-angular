@@ -35,13 +35,14 @@ export class CrearCategoriasComponent implements OnInit {
 
     this.categoriasService.agregar(this.categoriaNueva).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 201){
 
+          console.log(data);
           this.terminarCreacion();
         }
         else{
 
-
+          console.log(data);
         }
       },
       error => {

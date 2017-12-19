@@ -26,15 +26,14 @@ export class BuscarCategoriasComponent implements OnInit {
   		descripcion: ""
   	}
 
-  	this.categorias = [];
-
 	this.categoriasService.obtener().subscribe(data =>{
-
-		if(data.code == 200){			
-			this.categorias = data.data;
+		console.log(data)
+		if(data.status == 200){
+		
+			this.categorias = data.body;
 		}
 		else{
-		  	this.categorias = [];
+		  	console.log(data);
 		}
 	},
 		error => {
@@ -42,6 +41,7 @@ export class BuscarCategoriasComponent implements OnInit {
 		}
 	);
 
+/*
 	this.categorias = [{
 			nombre: "Categoria 1",
 			descripcion: "Descripcion 1",
@@ -58,7 +58,7 @@ export class BuscarCategoriasComponent implements OnInit {
 			eliminable: false
 		}
 	]
-
+*/
   }//Cierre ngOnInit
 
 

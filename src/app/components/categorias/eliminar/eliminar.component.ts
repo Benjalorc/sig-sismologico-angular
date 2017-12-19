@@ -33,7 +33,7 @@ export class EliminarCategoriasComponent implements OnInit {
 
     this.categoriasService.eliminar(this.categoria).subscribe(data =>{
 
-        if(data.code == 200){
+        if(data.status == 204){
 
           this.terminarBorrado();
         }
