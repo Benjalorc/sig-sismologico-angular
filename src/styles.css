@@ -15,6 +15,7 @@ html {
 body {
   padding-top: 5rem;
   margin-bottom: 60px; /* Margin bottom by footer height */
+  background-color: #ddd;
 }
 
 .footer {
@@ -30,16 +31,18 @@ body {
   padding: 3rem 1.5rem;
 }
 
+
 fieldset {
     font-family: sans-serif;
-    border: 3px solid #1F497D;
-    background: #ddd;
+    border: 3px solid #ddd;
+    background: white;
     border-radius: 5px;
     padding: 15px;
 }
 
 fieldset legend {
-	width:inherit;
+    width:inherit;
+    font-size: 14px;
     background: #1F497D;
     color: #fff;
     padding: 5px 10px ;
