@@ -1,1 +1,9 @@
-#mapid { height: 300px; }
+#mapid { height: 700px; }
+
+.row-full{
+ width: 100vw;
+ position: relative;
+ margin-left: -50vw;
+ margin-top: 100px;
+ left: 50%;
+}
