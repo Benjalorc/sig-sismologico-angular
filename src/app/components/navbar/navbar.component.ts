@@ -23,7 +23,7 @@ export class NavbarComponent implements OnInit {
   constructor(
     private capasService: CapasService, 
     private categoriasService: CategoriasService, 
-    private router: Router) {}
+    public router: Router) {}
         
 
   ngOnInit() {
@@ -102,7 +102,7 @@ export class NavbarComponent implements OnInit {
 
     this.loading = true;
     this.capasService.traer(nombre).subscribe(data =>{
-    this.loading = true;
+    this.loading = false;
 
         if(data.status == 200){     
 
