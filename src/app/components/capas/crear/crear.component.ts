@@ -90,7 +90,8 @@ export class CrearCapasComponent implements OnInit {
 
   crearCapa(){
 
-    this.capaNueva.atributos.push({"nombre": "geom", "tipo":this.capaNueva.geometria});
+//    this.capaNueva.atributos.push({"nombre": "geom", "tipo":this.capaNueva.geometria});
+    this.capaNueva.tipo = this.capaNueva.geometria;
 
     console.log(this.capaNueva);
 
@@ -100,7 +101,8 @@ export class CrearCapasComponent implements OnInit {
 
         if(data.status == 201){
 
-          this.terminarCreacion();
+          console.log(data.body);
+          this.registrarAtributos(data.body);
         }
         else{
 
@@ -111,6 +113,49 @@ export class CrearCapasComponent implements OnInit {
         console.log(error);
       }
     );
+
+  }
+
+  registrarAtributos(capa){
+
+
+    this.capaNueva.atributos.forEach((element) =>{
+
+      let atributos = {
+
+        "descripcion": "Sin descripcion",
+        "capa": capa.id,
+        "nombre": element.nombre,
+        "tipo": element.tipo
+      }
+
+
+      this.capasService.crearAtributos(atributos).subscribe(data =>{
+
+          if(data.status == 201){
+          
+            console.log("atributo registrado");
+            console.log(data.body);
+            if(data.body.nombre == this.capaNueva.atributos[this.capaNueva.atributos.length-1].nombre){
+              this.terminarCreacion();
+            }
+
+          }
+          else{
+
+
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+
+
+    });
+
+
+
 
   }
 

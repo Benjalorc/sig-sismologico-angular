@@ -19,22 +19,33 @@ export class CapasService {
 
     traer(nombre): Observable<any>{
 
-        return this.http.get(this.url+"/tipo="+nombre, { observe: 'response' });
+        return this.http.get(this.url+"/nombre/"+nombre, { observe: 'response' });
     }
 
     importar(file): Observable<any>{
 
         let input = new FormData();
         input.append('file', file, file.name);
-
         let headers = new HttpHeaders().set('Content-Type','multipart/form-data');         
         return this.http.post('https://gis-entorno-benjamin-s-e.c9users.io:8080/importar', input, {headers: headers, observe: 'response'});
     }
 
     agregar(capa): Observable<any>{
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');
+        let headers = new HttpHeaders().set('Content-Type','application/json');
         return this.http.post(this.url, capa, {headers: headers,  observe: 'response'});
+    }   
+
+    crearAtributos(atributos): Observable<any>{
+
+        let headers = new HttpHeaders().set('Content-Type','application/json');
+        return this.http.post('https://gis-entorno-benjamin-s-e.c9users.io:8080/atributos', atributos, {headers: headers,  observe: 'response'});
+    }   
+
+    eliminarAtributos(id): Observable<any>{
+
+        let headers = new HttpHeaders().set('Content-Type','application/json');
+        return this.http.delete('https://gis-entorno-benjamin-s-e.c9users.io:8080/atributos/'+id, {headers: headers,  observe: 'response'});
     }   
 
 
@@ -42,7 +53,7 @@ export class CapasService {
 
         capa.categoria = capa.categoria.id;
 
-        let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
+        let headers = new HttpHeaders().set('Content-Type','application/json');         
         return this.http.put(this.url+'/'+capa.id, capa, {headers: headers, observe: 'response'});
     }
 
