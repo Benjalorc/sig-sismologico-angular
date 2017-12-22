@@ -239,6 +239,7 @@ export class InicioComponent implements OnInit {
 	this.initDraw();
 	eval("window.yo = this");
   	document.getElementById("montar").click();
+
   }
 
 
@@ -277,6 +278,26 @@ export class InicioComponent implements OnInit {
 		this.addPointToArr(ev.latlng.lng, ev.latlng.lat);		
 	});
 
+	this.activeMap.scrollWheelZoom.disable()
+	
+	let este = this;
+
+
+	window.addEventListener("keydown", function(e){
+
+		if(e.keyCode == 16){
+			este.activeMap.scrollWheelZoom.enable()
+		}
+
+	});
+
+	window.addEventListener("keyup", function(e){
+
+		if(e.keyCode == 16){
+			este.activeMap.scrollWheelZoom.disable()
+		}
+
+	});
 
   }
 
@@ -378,6 +399,12 @@ export class InicioComponent implements OnInit {
 
   	let match = false;
 
+	console.log("Largo: "+geoJson.features.length);
+	if (geoJson.features.length == 0){ 
+		
+		return true;
+	}
+	
   	geoJson.features.forEach((element) =>{
 
   		let nuevo = element.name;
