@@ -1,13 +1,72 @@
-		<div id="mapid" class="row-full"></div>
+<div class="row-full">
+	<div *ngIf="capasActivas.length>0">
+		<div class="row">
+			<div class="col-12">
+				<form>
+
+					<fieldset>
+						<legend>Filtrar Resultados</legend>
+	
+						<div class="row">
+							<div class="form-group col-3">
+
+								<label class="control-label" for="layerToFilter">Capa</label>
+								<select class="form-control" name="layerToFilter" [(ngModel)]="layerToFilter" (change)="filtrarAtributos()">
+									<option value="" selected disabled>Capa...</option>
+									<option *ngFor="let cap of capasActivas" [value]="cap">{{cap}}</option>
+								</select>
+							</div>						
+							<div class="form-group col-2">
+
+								<label class="control-label" for="atributoFiltrado">Atributo</label>
+								<select class="form-control" name="atributoFiltrado" [(ngModel)]="atributoFiltrado" (change)="elegirAtributo()">
+									<option value="" selected disabled>Atributo...</option>
+									<option *ngFor="let att of attributesToFilter" [value]="att.nombre">{{att.nombre}}</option>
+								</select>
+							</div>
+							<div class="form-group col-3">
+
+								<label class="control-label" for="filtroElegido">Filtro</label>
+								<select class="form-control" name="filtroElegido" [(ngModel)]="filtroElegido" [disabled]="atributoElegido.nombre==''">
+									<option value="" selected disabled>Filtro...</option>
+									<option *ngIf="atributoElegido.tipo!='Text'" value="mayor">Mayor</option>
+									<option *ngIf="atributoElegido.tipo!='Text'" value="mayorigual">Mayor o Igual</option>
+									<option *ngIf="atributoElegido.tipo!='Text'" value="menor">Menor</option>
+									<option *ngIf="atributoElegido.tipo!='Text'" value="menorigual">Menor o Igual</option>
+									<option value="igual">Igual</option>
+									<option value="diferente">Diferente</option>
+								</select>
+							</div>
+							<div class="form-group col-auto">
+
+									<label class="control-label" for="valorBusqueda">Valor</label>
+								<div class="input-group">
+									<input *ngIf="atributoElegido.tipo=='Text'" type="text" name="valorBusqueda" [(ngModel)]="valorBusqueda" [disabled]="filtroElegido==''">
+									<input *ngIf="atributoElegido.tipo!='Text'" type="number" name="valorBusqueda" [(ngModel)]="valorBusqueda" [disabled]="filtroElegido==''">
+									<button type="button" class="btn btn-outline-primary" (click)="aplicarFiltro()" [disabled]="valorBusqueda==''"><i class="fa fa-filter"></i></button>
+								</div>
+							</div>
+						</div>
+					</fieldset>
+					
+
+				</form>
+			</div>
+		</div>
+	</div>	
+	<div id="mapid"></div>
+</div>
+
 <div class="push">
 <flash-messages></flash-messages>
 
 	<button type="button" id="mostrarCapaNueva" style="display: none" (click)="cargarGeojsonFromLocal()"></button>
+	<button type="button" id="previsualizarCapa" style="display: none" (click)="previsualizarCapa()"></button>
 
 
 <div class="row">
 	<div class="col">
-		<button type="button" class="btn btn-outline-success" *ngIf="!agregarDatosActivado && !editarDatosActivado && !eliminarDatosActivado" (click)="agregarDatos()">Agregar Datos</button>
+		<button type="button" class="btn btn-success" *ngIf="!agregarDatosActivado" [disabled]="capasActivas.length==0" (click)="agregarDatos()">Agregar Datos</button>
 	</div>
 <!--
 	<div class="col">
@@ -20,12 +79,16 @@
 </div>
 
 
-<app-agregar-datos 
-(agregarTerminado)="terminarAgregar($event)"
-[categorias]="categorias" 
-[capas]="capas"
+<app-datos 
+[categorias]="categoriaActiva" 
+[capasActivas]="capasActivas"
+[capas]="geoJsons"
+[estructuras]="capas"
+(coordenadaActualizada)="actualizarGeojsonEditable($event)"
+(capaCerrada)="trancarExterno($event)"
+(mapaRefrescadoRequerido)="refrescarMapa($event)"
 *ngIf="agregarDatosActivado">	
-</app-agregar-datos>
+</app-datos>
 
 
 

@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule }   from '@angular/forms';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap/collapse/collapse.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 
@@ -34,7 +35,7 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
-
+import { ImportarCapasComponent, ImportarCapasContent } from './components/capas/importar/importar.component';
 
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
@@ -55,6 +56,8 @@ const appRoutes : Routes = [
     EliminarCategoriasComponent,
     CapasComponent,
     CrearCapasComponent,
+    ImportarCapasComponent,
+    ImportarCapasContent,
     BuscarCapasComponent,
     ActualizarCapasComponent,
     EliminarCapasComponent,
@@ -64,11 +67,13 @@ const appRoutes : Routes = [
     ActualizarDatosComponent,
     EliminarDatosComponent
   ],
+  entryComponents: [ImportarCapasContent],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes),
     NgbCollapseModule.forRoot(),
     NgbDropdownModule.forRoot(),
+    NgbModalModule.forRoot(),
     AngularFontAwesomeModule,
     FormsModule,
     FlashMessagesModule.forRoot(),
