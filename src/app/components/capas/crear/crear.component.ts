@@ -95,9 +95,9 @@ export class CrearCapasComponent implements OnInit {
 
     console.log(this.capaNueva);
 
-    this.loading = false;
-    this.capasService.agregar(this.capaNueva).subscribe(data =>{
     this.loading = true;
+    this.capasService.agregar(this.capaNueva).subscribe(data =>{
+    this.loading = false;
 
         if(data.status == 201){
 
