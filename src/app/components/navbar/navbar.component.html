@@ -1,17 +1,4 @@
-<div class="container">
-  
-
-
-<div class="row">
-<div class="col-xs-12">
-
-<input type="file" name="file" id="geojsonfile" style="display: none" (change)="cargarGeojson($event)">
-<button type="button" id="montar" style="display: none" (click)="montarDatos()"></button>
-	
-
-
-
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
       <a class="navbar-brand" routerLink="/">CSUDO</a>      
 
       <button class="navbar-toggler" type="button" (click)="collapse()" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,20 +32,16 @@
           </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
+         <button class="btn btn-outline-info my-2 my-sm-0" routerLink="/casos"><i class="fa fa-add" aria-hidden="true"></i>Reportar caso</button>
           <button class="btn btn-outline-info my-2 my-sm-0"><i class="fa fa-address-book-o" aria-hidden="true"></i>Registrar</button>
           <button class="btn btn-outline-success my-2 my-sm-0"><i class="fa fa-sign-in" aria-hidden="true"></i>Entrar</button>
         </form>
       </div>
     </nav>
-
-
-
-</div>
-</div>
-
+<input type="file" name="file" id="geojsonfile" style="display: none" (change)="cargarGeojson($event)">
+<button type="button" id="montar" style="display: none" (click)="montarDatos()"></button>
+  
 
 
 
 <i class="fa fa-spinner fa-pulse fa-2x fa-fw" *ngIf="loading"></i>
-	
-</div>

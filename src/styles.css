@@ -14,14 +14,8 @@ i.fa-spinner{
   z-index: 2000;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
 
 body {
-  padding-top: 5rem;
-  margin-bottom: 60px; /* Margin bottom by footer height */
   background-color: #ddd;
 }
 

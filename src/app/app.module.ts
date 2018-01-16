@@ -20,6 +20,8 @@ import { ActualizarCategoriasComponent } from './components/categorias/actualiza
 import { EliminarCategoriasComponent } from './components/categorias/eliminar/eliminar.component';
 
 import { CategoriasService } from './services/categorias/categorias.service';
+import { CasosService } from './services/casos.service';
+
 
 import { CapasComponent } from './components/capas/capas.component';
 import { CrearCapasComponent } from './components/capas/crear/crear.component';
@@ -34,13 +36,15 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
-
+import { CasosComponent } from './components/casos/casos.component';
+import { InputTextModule, ButtonModule, DataTableModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule }  from 'primeng/primeng';
 
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
   { path: 'categorias', component: CategoriasComponent},
   { path: 'capas', component: CapasComponent},
-  { path: 'datos', component: DatosComponent}
+  { path: 'datos', component: DatosComponent},
+  { path: 'casos', component: CasosComponent}
 ]
 
 @NgModule({
@@ -62,7 +66,8 @@ const appRoutes : Routes = [
     AgregarDatosComponent,
     BuscarDatosComponent,
     ActualizarDatosComponent,
-    EliminarDatosComponent
+    EliminarDatosComponent,
+    CasosComponent
   ],
   imports: [
     BrowserModule,
@@ -72,9 +77,17 @@ const appRoutes : Routes = [
     AngularFontAwesomeModule,
     FormsModule,
     FlashMessagesModule.forRoot(),
-    HttpClientModule
+    HttpClientModule,
+    InputMaskModule,
+    GrowlModule,
+    DataTableModule,
+    HttpClientModule,
+    InputTextModule,
+    DialogModule,
+    ButtonModule,
+    FileUploadModule
   ],
-  providers: [CategoriasService, CapasService, DatosService],
+  providers: [CategoriasService, CapasService, DatosService, CasosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

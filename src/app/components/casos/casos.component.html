@@ -1,0 +1,73 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+   integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+   crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+   integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+   crossorigin=""></script>
+<p-growl [(value)]="msgs"></p-growl>
+<p-dialog header="Reportar nuevo caso" [(visible)]="display" modal="true" [width]="600" >
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Latitud:
+        </div>
+        <div class="ui-grid-col-8">
+            <input type="text" pInputText class="pull-right" [(ngModel)]="lat"/>
+        </div>
+        <br/>
+    </div>
+    <br/>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Longitud:
+        </div>
+        <div class="ui-grid-col-8">
+            <input type="text" pInputText class="pull-right" [(ngModel)]="lng"/>
+        </div>
+        <br/>
+    </div>
+    <br/>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Fecha:
+        </div>
+        <div class="ui-grid-col-8">
+            <p-inputMask class="pull-right" mask="9999-99-99" [(ngModel)]="fecha" placeholder="2018-01-01" slotChar="yyyy-mm-dd"></p-inputMask>
+        </div>
+        <br/>
+    </div>
+    <br/>
+
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Hora:
+        </div>
+        <div class="ui-grid-col-8">
+           <p-inputMask mask="99:99" class="pull-right" [(ngModel)]="hora" placeholder="09:40" slotChar="hh:mm"></p-inputMask>
+        </div>
+    </div>
+    <br/>
+
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Descripcion:
+        </div>
+         <div class="ui-grid-col-8">
+           <textarea class="pull-right" [rows]="1" pInputTextarea [(ngModel)]="descripcion" autoResize="true" placeholder="Descripcion"></textarea>
+        </div>
+    </div>
+
+    <p-fileUpload name="demo[]"  customUpload="true" (uploadHandler)="onUpload($event)" auto="true"
+        multiple="multiple" accept="image/*" maxFileSize="1000000" cancelLabel="Cancelar"
+        chooseLabel="Buscar" uploadLabel="Subir">
+
+    </p-fileUpload>
+
+
+    <p-footer>
+       <button type="button" pButton icon="fa-check" (click)="registrar()" label="Registrar"></button>
+            <button type="button" pButton icon="fa-close" (click)="display=false" label="Cancelar"></button>
+    </p-footer>
+</p-dialog>
+
+<div id="mapa" class="row-full"></div>
+

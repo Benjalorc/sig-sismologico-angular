@@ -10,7 +10,7 @@ export class CategoriasService {
     constructor(
         public http: HttpClient
     ){
-        this.url = 'https://gis-entorno-benjamin-s-e.c9users.io:8080/categorias';
+        this.url = 'http://127.0.0.1:8000';
     }
 
 	obtener(): Observable<any>{
