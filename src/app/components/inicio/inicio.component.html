@@ -62,6 +62,38 @@
 
 	<button type="button" id="mostrarCapaNueva" style="display: none" (click)="cargarGeojsonFromLocal()"></button>
 	<button type="button" id="previsualizarCapa" style="display: none" (click)="previsualizarCapa()"></button>
+	
+	
+	<div style="display: none">
+		<div class="leaflet-control-layers leaflet-control leaflet-control-layers-expanded" id="formularioPunto" (mouseover)="prevenirInteraccion()" (mouseout)="permitirInteraccion()">
+			
+		<form class="form">
+			
+			<div class="row">
+				<div class="form-group col">
+					<label for="searchlng" class="control-label">Latitud</label>
+					<input type="number" min="-90" max="90" class="form-control" name="searchlat" [(ngModel)]="searchPoint.lat" />
+				</div>
+			</div>			
+
+			<div class="row">
+				<div class="form-group col">
+					<label for="searchlng" class="control-label">Longitud</label>
+					<input type="number" min="-180" max="180" class="form-control" name="searchlng" [(ngModel)]="searchPoint.lng" />
+				</div>
+			</div>			
+			
+			
+			<div class="row">
+				<div class="form-group col">
+					<button type="button" class="btn btn-warning" (click)="obtenerPunto()"> <i class="fa fa-user-o" aria-hidden="true"></i> </button>
+					<button type="button" class="btn btn-info" (click)="encontrarPunto()"> <i class="fa fa-search" aria-hidden="true"></i> </button>
+				</div>
+			</div>
+		</form>
+
+		</div>
+	</div>
 
 
 <div class="row">

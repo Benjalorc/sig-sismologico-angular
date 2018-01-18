@@ -59,6 +59,13 @@ export class InicioComponent implements OnInit {
   filtroElegido: any;
 
   valorBusqueda: string;
+  
+  searchControl: any;
+  searchPoint: any;
+
+  marcadorBusqueda: any;
+  colocandoPersona: boolean;
+  personaPorColocar: boolean;
 
   constructor(
 
@@ -67,6 +74,14 @@ export class InicioComponent implements OnInit {
   			private capasService: CapasService) { }
 
   ngOnInit() {
+
+	this.colocandoPersona = false;
+	this.personaPorColocar = false;
+  	
+  	this.searchPoint = {
+  		"lng": 0,
+  		"lat": 0
+  	};
 
   	this.categoriaActiva = "";
 
@@ -206,6 +221,52 @@ export class InicioComponent implements OnInit {
   }
 
 
+	prevenirInteraccion(){
+		
+		this.activeMap.dragging.disable();
+		this.activeMap.doubleClickZoom.disable();
+	}
+	
+	permitirInteraccion(){
+
+		this.activeMap.dragging.enable();
+		this.activeMap.doubleClickZoom.enable();
+	}
+
+	obtenerPunto(ev){
+
+		this.personaPorColocar = true;
+		this.flashMessage.show('Haga click en el mapa para obtener las coordenadas', { cssClass: 'alert-info', timeout: 4000 });
+	}
+	
+	encontrarPunto(){
+
+		let init = this;
+
+		if(this.marcadorBusqueda) this.activeMap.removeLayer(this.marcadorBusqueda);
+		this.colocandoPersona = false;
+
+		console.log("break 1");
+		this.activeMap.setView([this.searchPoint.lat, this.searchPoint.lng]);
+
+		let popupDiv = document.createElement("div");
+		let boton = document.createElement("button");
+		boton.setAttribute("class","btn btn-danger");
+		boton.innerHTML='<i class="fa fa-times" aria-hidden="true"></i>';
+		boton.addEventListener("click", function(){
+			
+			init.activeMap.removeLayer(init.marcadorBusqueda);
+		});
+		popupDiv.appendChild(boton);
+
+		console.log("break 2");
+		this.marcadorBusqueda = L.circle([this.searchPoint.lat, this.searchPoint.lng],{
+		    color: 'red',
+		    fillColor: '#f03',
+		    fillOpacity: 0.5,
+		    radius: 500
+		}).bindPopup(popupDiv).addTo(this.activeMap);
+	}
 
 
   initDraw(){
@@ -227,6 +288,8 @@ export class InicioComponent implements OnInit {
 		zoom: 11,
 		layers: [osm]
 	});
+	
+	this.configurarControlBusqueda();
 
 	this.baseMaps = {
 	    "OSM": osm,
@@ -241,20 +304,38 @@ export class InicioComponent implements OnInit {
 
 	this.activeMap.on("click", (ev) =>{
 
-		if(!this.insertandoVertice){
 
-			if(!this.popupOpened && !this.moviendoVertice){
+		if(this.colocandoPersona){
 
-				if(!this.caminoCerrado){
+			this.personaPorColocar = false;			
+			this.searchPoint.lat = ev.latlng.lat;
+			this.searchPoint.lng = ev.latlng.lng;
+			this.encontrarPunto();
+		}
 
-					if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
-					if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+		if(this.personaPorColocar){
+			
+			this.colocandoPersona = true;
+		}
+
+		else{
+
+			if(!this.insertandoVertice){
+	
+				if(!this.popupOpened && !this.moviendoVertice){
+	
+					if(!this.caminoCerrado){
+	
+						if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
+						if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+					}
+					this.addPointToArr(ev.latlng.lng, ev.latlng.lat);
 				}
-				this.addPointToArr(ev.latlng.lng, ev.latlng.lat);
+				if(this.moviendoVertice){
+					this.moverVertice(ev.latlng, 2);
+				}
 			}
-			if(this.moviendoVertice){
-				this.moverVertice(ev.latlng, 2);
-			}
+			
 		}
 
 	});
@@ -290,6 +371,62 @@ export class InicioComponent implements OnInit {
 
 	});
 
+  }
+  
+  configurarControlBusqueda(){
+  	
+///INICIO CONTROL
+	
+	let init = this;
+	
+	L.Control.Search = L.Control.extend({
+  options: {
+    // topright, topleft, bottomleft, bottomright
+    position: 'topright',
+    placeholder: 'Search...'
+  },
+  initialize: function (options /*{ data: {...}  }*/) {
+    // constructor
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+    // happens after added to map
+    
+//    var container = L.DomUtil.create('div', 'leaflet-control-layers leaflet-control leaflet-control-layers-expanded');
+
+    this.form = document.getElementById("formularioPunto")
+/*  var group = L.DomUtil.create('div', 'form-group', this.form);
+    var input1 = L.DomUtil.create('input', 'form-group', group);
+    var input2 = L.DomUtil.create('input', 'form-group', group);
+    input1.type = 'number';
+    input1.id = 'number';
+    input1.placeholder = "longitud";
+    input2.type = 'number';
+    input2.placeholder = "latitud";
+*/
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control.search = function(id, options) {
+	  return new L.Control.Search(id, options);
+	}
+
+	var items = [];
+
+	this.searchControl = L.control.search({
+	  data: items
+	}).addTo(this.activeMap);
+	
   }
 
   estiloEdicion(){
