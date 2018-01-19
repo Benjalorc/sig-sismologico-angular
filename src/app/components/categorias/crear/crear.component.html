@@ -19,6 +19,52 @@
 		</div>
 
 
+		<div class="row">
+
+			<div class="col-1"></div>
+
+			<div class="col">
+				
+				<table class="table table-striped table-hover table-responsive">
+				  <caption>Atributos de la categoria</caption>
+
+				  <thead class="thead-dark">
+				    <tr>
+				      <th scope="col">#</th>
+				      <th scope="col">Propiedad</th>
+				      <th scope="col">Tipo</th>
+				      <th scope="col"></th>
+				    </tr>
+				  </thead>
+				  <tbody>
+				    <tr *ngFor="let atributo of categoriaNueva.atributos; let i = index; ">
+				      <th scope="row" *ngIf="atributo.nombre!='geom'">{{i+1}}</th>
+				      <td *ngIf="atributo.nombre!='geom'">{{atributo.nombre}}</td>
+				      <td *ngIf="atributo.nombre!='geom'">{{atributo.tipo}}</td>
+				      <td *ngIf="atributo.nombre!='geom'"><button type="button" class="btn btn-danger" (click)="removerPropiedad(i)"><fa name="minus"></fa></button></td>
+				    </tr>
+				    <tr>
+				      <th scope="row">#</th>
+				      <td><input type="text" class="form-control" [(ngModel)]="propiedadNueva.nombre" name="nombre_propiedad"></td>
+				      <td>
+				      	<select class="form-control" [(ngModel)]="propiedadNueva.tipo" name="tipo_dato">
+				      		<option value="" selected default></option>
+				      		<option value="Text">Texto</option>
+				      		<option value="Int">Numero Entero</option>
+				      		<option value="Float">Numero Decimal</option>
+				      	</select>
+				      </td>
+				      <td><button type="button" class="btn btn-success" (click)="agregarPropiedad()"><fa name="plus"></fa></button></td>
+				    </tr>
+				  </tbody>
+				</table>
+
+			</div>
+
+			<div class="col-1"></div>
+
+		</div>
+
 		</fieldset>		
 
 		<div class="row">

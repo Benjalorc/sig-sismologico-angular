@@ -10,6 +10,7 @@ export class CrearCategoriasComponent implements OnInit {
 
   loading: boolean;
   categoriaNueva: any;
+  propiedadNueva: any;
 
   @Input() categoria: any;
   @Output() creacionTerminada = new EventEmitter<boolean>();
@@ -19,6 +20,38 @@ export class CrearCategoriasComponent implements OnInit {
   ngOnInit() {
     this.loading = false;
     this.categoriaNueva = this.categoria;
+    this.categoriaNueva.atributos = [];
+
+    this.propiedadNueva = {
+      nombre: "",
+      tipo: ""
+    }
+  }
+
+  agregarPropiedad(){
+
+    if(this.propiedadNueva.nombre == ""){
+      return false;
+    }   
+
+    if(this.propiedadNueva.tipo == ""){
+      return false;
+    }
+
+    if( this.categoriaNueva.atributos.find((element) =>{return element.nombre == this.propiedadNueva.nombre}) ){
+      return false;
+    }
+
+    this.categoriaNueva.atributos.push({nombre: this.propiedadNueva.nombre, tipo: this.propiedadNueva.tipo});
+
+    this.propiedadNueva.nombre = "";
+    this.propiedadNueva.tipo = "";
+  }
+
+  removerPropiedad(i){
+
+    let propiedades = this.categoriaNueva.atributos.filter((element) =>{return element.nombre != this.categoriaNueva.atributos[i].nombre});
+    this.categoriaNueva.atributos = propiedades;
   }
 
   terminarCreacion(){

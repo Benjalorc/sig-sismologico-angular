@@ -4,6 +4,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule }   from '@angular/forms';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap/collapse/collapse.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
+import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { FlashMessagesModule } from 'angular2-flash-messages';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -38,11 +39,13 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
+<<<<<<< HEAD
 import { CasosComponent } from './components/casos/casos.component';
 import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule }  from 'primeng/primeng';
 
 import { DropdownModule }  from 'primeng/components/dropdown/dropdown';
 import { SucesosComponent } from './components/sucesos/sucesos.component';
+import { ImportarCapasComponent, ImportarCapasContent } from './components/capas/importar/importar.component';
 
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
@@ -65,6 +68,8 @@ const appRoutes : Routes = [
     EliminarCategoriasComponent,
     CapasComponent,
     CrearCapasComponent,
+    ImportarCapasComponent,
+    ImportarCapasContent,
     BuscarCapasComponent,
     ActualizarCapasComponent,
     EliminarCapasComponent,
@@ -76,12 +81,14 @@ const appRoutes : Routes = [
     CasosComponent,
     SucesosComponent
   ],
+  entryComponents: [ImportarCapasContent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     NgbCollapseModule.forRoot(),
     NgbDropdownModule.forRoot(),
+    NgbModalModule.forRoot(),
     AngularFontAwesomeModule,
     FormsModule,
     FlashMessagesModule.forRoot(),

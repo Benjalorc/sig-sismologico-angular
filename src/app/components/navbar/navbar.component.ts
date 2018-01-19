@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Routes, Router, RouterModule } from '@angular/router';
 import { CapasService } from '../../services/capas/capas.service'
 import { CategoriasService } from '../../services/categorias/categorias.service'
+import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-navbar',
@@ -11,7 +12,6 @@ import { CategoriasService } from '../../services/categorias/categorias.service'
 export class NavbarComponent implements OnInit {
 
   public isCollapsed = true;
-
 
   loading: boolean;
 
@@ -23,10 +23,13 @@ export class NavbarComponent implements OnInit {
   constructor(
     private capasService: CapasService, 
     private categoriasService: CategoriasService, 
-    public router: Router) {}
+    public router: Router,
+    private modalService: NgbModal) {}
         
 
   ngOnInit() {
+
+    eval("window.yo3 = this");
 
     window.localStorage.categorias = JSON.stringify([]);
     window.localStorage.capas = JSON.stringify([]);
@@ -56,17 +59,36 @@ export class NavbarComponent implements OnInit {
   }
 
   abrirSelectorArchivo(){
-    document.getElementById("geojsonfile").click();
+    //document.getElementById("geojsonfile").click();
+    this.open();
+  }
+
+  open() {
+//    const modalRef = this.modalService.open();
   }
 
   cargarGeojson(evento){
+
+    let nav = this;
+
+    let fr = new FileReader();
     
-    let file = evento.target.files[0];
-    console.log(file);
+    fr.addEventListener("load", (e)=>{
+
+      let geoJson = JSON.parse(e.target["result"]);
+      window.localStorage.geojsonToLoad = JSON.stringify(geoJson);
+    }, false);
+
+    fr.readAsText(evento.target.files[0]);
+
+  }
+
+  importGeojson(geojson){
 
     this.loading = true;
-    this.capasService.importar(file).subscribe(data =>{
+    this.capasService.importar(geojson).subscribe(data =>{
     this.loading = false;
+    window.localStorage.removeItem("geojsonToLoad");
 
         if(data.status == 200){     
 
@@ -81,10 +103,12 @@ export class NavbarComponent implements OnInit {
       }
     );
 
+
   }
 
   filtrarCapas(catId){
 
+    window.localStorage.categoriaActiva = JSON.stringify(catId);
     console.log(catId);
     this.capasFiltradas = this.capas.filter((element) =>{return element.categoria.id == catId});
   }
@@ -106,9 +130,15 @@ export class NavbarComponent implements OnInit {
 
         if(data.status == 200){     
 
-          window.localStorage.capaNueva = JSON.stringify(data.body);
+          let capaNueva = {
+            geojson: data.body,
+            nombre: nombre
+          }
+
+          window.localStorage.capaNueva = JSON.stringify(capaNueva);
           document.getElementById("mostrarCapaNueva").click();
           console.log(data.body);
+          console.log(data);
         }
         else{
 

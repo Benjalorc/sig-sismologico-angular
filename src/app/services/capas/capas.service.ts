@@ -22,12 +22,13 @@ export class CapasService {
         return this.http.get(this.url+"/nombre/"+nombre, { observe: 'response' });
     }
 
-    importar(file): Observable<any>{
+    importar(contenido): Observable<any>{
 
         let input = new FormData();
         input.append('file', file, file.name);
         let headers = new HttpHeaders().set('Content-Type','multipart/form-data');         
         return this.http.post('http://127.0.0.1:8000/importar', input, {headers: headers, observe: 'response'});
+
     }
 
     agregar(capa): Observable<any>{
@@ -61,6 +62,13 @@ export class CapasService {
 
         let headers = new HttpHeaders().set('Content-Type','application/x-www-form-urlencoded');         
         return this.http.delete(this.url+'/'+capa.id, {headers: headers, observe: 'response'});
+    }
+
+    editarDatos(capa): Observable<any>{
+
+        console.log({data: JSON.stringify(capa.geojson)});
+        let headers = new HttpHeaders().set('Content-Type','application/json');         
+        return this.http.put(this.url+'/nombre/'+capa.nombre, {data: JSON.stringify(capa.geojson)}, {headers: headers, observe: 'response'});
     }
 
 }
