@@ -7,7 +7,7 @@ export class CasosService {
   public url: string;
   
   constructor(public http: HttpClient) {
-    this.url = 'http://127.0.0.1:8080/casos';
+    this.url = 'http://127.0.0.1:8000/casos';
    }
 
    registrar(caso): Observable<any>{

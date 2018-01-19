@@ -6,7 +6,7 @@ import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap/collapse/collapse.
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { FlashMessagesModule } from 'angular2-flash-messages';
-
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -21,6 +21,8 @@ import { EliminarCategoriasComponent } from './components/categorias/eliminar/el
 
 import { CategoriasService } from './services/categorias/categorias.service';
 import { CasosService } from './services/casos.service';
+import { SucesosService } from './services/sucesos.service';
+
 
 
 import { CapasComponent } from './components/capas/capas.component';
@@ -37,14 +39,18 @@ import { ActualizarDatosComponent } from './components/datos/actualizar/actualiz
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
 import { CasosComponent } from './components/casos/casos.component';
-import { InputTextModule, ButtonModule, DataTableModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule }  from 'primeng/primeng';
+import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule }  from 'primeng/primeng';
+
+import { DropdownModule }  from 'primeng/components/dropdown/dropdown';
+import { SucesosComponent } from './components/sucesos/sucesos.component';
 
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
   { path: 'categorias', component: CategoriasComponent},
   { path: 'capas', component: CapasComponent},
   { path: 'datos', component: DatosComponent},
-  { path: 'casos', component: CasosComponent}
+  { path: 'casos', component: CasosComponent},
+  { path: 'sucesos', component: SucesosComponent}
 ]
 
 @NgModule({
@@ -67,10 +73,12 @@ const appRoutes : Routes = [
     BuscarDatosComponent,
     ActualizarDatosComponent,
     EliminarDatosComponent,
-    CasosComponent
+    CasosComponent,
+    SucesosComponent
   ],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     NgbCollapseModule.forRoot(),
     NgbDropdownModule.forRoot(),
@@ -85,9 +93,11 @@ const appRoutes : Routes = [
     InputTextModule,
     DialogModule,
     ButtonModule,
-    FileUploadModule
+    FileUploadModule,
+    DropdownModule,
+    DataListModule
   ],
-  providers: [CategoriasService, CapasService, DatosService, CasosService],
+  providers: [CategoriasService, CapasService, DatosService, SucesosService,CasosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

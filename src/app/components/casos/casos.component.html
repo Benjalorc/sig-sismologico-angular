@@ -46,6 +46,24 @@
         </div>
     </div>
     <br/>
+    <div class="ui-grid-row">
+        <div class="ui-grid-col-2">
+            Suceso:
+        </div>
+        <div class="ui-grid-col-8">
+           <p-dropdown class="pull-right" requerid="true" [options]="sucesos" [(ngModel)]="suceso" [style]="{'width':'100%'}" [autoWidth]="false" filter="true">
+            <ng-template let-item pTemplate="selectedItem">
+                <span style="vertical-align:middle">{{item.label}}</span>
+            </ng-template>
+            <ng-template let-obj pTemplate="item">
+                <div class="ui-helper-clearfix" style="position: relative;height: 25px;">
+                    <div style="font-size:14px;float:right;margin-top:4px">{{obj.label}}</div>
+                </div>
+            </ng-template>
+        </p-dropdown>
+        </div>
+    </div>
+    <br/>
 
     <div class="ui-grid-row">
         <div class="ui-grid-col-2">
