@@ -28,6 +28,7 @@ export class CasosComponent implements OnInit {
 
   ngOnInit() {
         this.iniciar_mapa();
+        this.msgs.push({severity:'success', summary:'Haga click en el lugar donde ourrio el hecho'});
         this.sucesosService.all().subscribe(data =>{
           if (data.status == 200){
            var result = [];

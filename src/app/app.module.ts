@@ -39,7 +39,6 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
-<<<<<<< HEAD
 import { CasosComponent } from './components/casos/casos.component';
 import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule }  from 'primeng/primeng';
 
