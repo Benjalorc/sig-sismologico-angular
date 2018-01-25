@@ -24,8 +24,6 @@ import { CategoriasService } from './services/categorias/categorias.service';
 import { CasosService } from './services/casos.service';
 import { SucesosService } from './services/sucesos.service';
 
-
-
 import { CapasComponent } from './components/capas/capas.component';
 import { CrearCapasComponent } from './components/capas/crear/crear.component';
 import { BuscarCapasComponent } from './components/capas/buscar/buscar.component';
@@ -40,7 +38,7 @@ import { ActualizarDatosComponent } from './components/datos/actualizar/actualiz
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
 import { CasosComponent } from './components/casos/casos.component';
-import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule }  from 'primeng/primeng';
+import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule}  from 'primeng/primeng';
 
 import { DropdownModule }  from 'primeng/components/dropdown/dropdown';
 import { SucesosComponent } from './components/sucesos/sucesos.component';

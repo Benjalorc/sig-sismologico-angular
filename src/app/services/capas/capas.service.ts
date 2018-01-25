@@ -22,13 +22,10 @@ export class CapasService {
         return this.http.get(this.url+"/nombre/"+nombre, { observe: 'response' });
     }
 
-    importar(contenido): Observable<any>{
+   importar(contenido): Observable<any>{
 
-        let input = new FormData();
-        input.append('file', file, file.name);
-        let headers = new HttpHeaders().set('Content-Type','multipart/form-data');         
-        return this.http.post('http://127.0.0.1:8000/importar', input, {headers: headers, observe: 'response'});
-
+        let headers = new HttpHeaders().set('Content-Type','application/json');         
+        return this.http.post(this.url+'/importar', contenido, {headers: headers, observe: 'response'});
     }
 
     agregar(capa): Observable<any>{

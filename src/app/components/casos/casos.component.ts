@@ -32,7 +32,7 @@ export class CasosComponent implements OnInit {
         this.sucesosService.all().subscribe(data =>{
           if (data.status == 200){
            var result = [];
-            result.push({label:"Seleccionar", value: null})
+            result.push({label:"Seleccione una suceso de la lista", value: null})
             for (var i=0; i<data.body.length; i++)
             {
               result.push({label:data.body[i].nombre, value: data.body[i].id});
@@ -71,8 +71,9 @@ export class CasosComponent implements OnInit {
 
   registrar()
   {
-    console.log(this.uploadedFiles);
-    this.msgs = [];
+  this.msgs = [];
+    if (this.validar())
+    {
     let caso = {
       "fecha": this.fecha,
       "hora": this.hora,
@@ -92,7 +93,37 @@ export class CasosComponent implements OnInit {
       }
     }, error => {
       this.msgs.push({severity:'error', summary:'Operacion fallida', detail:'Ocurrio un problema mientras se registraba su caso'});
-    });
+    });}
+  }
+
+  validar()
+  {
+    let res = true;
+    if (this.fecha == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Fecha', detail:'es requerida'});
+    }
+    if (this.hora == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Hora', detail:'es requerida'});
+    }
+    if (this.lat == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Latitud', detail:'es requerida'});
+    }
+    if (this.lng == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Longitud', detail:'es requerida'});
+    }
+    if (this.descripcion == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Descripcion', detail:'es requerida'});
+    }
+    if (this.suceso == null){
+      res = false;
+      this.msgs.push({severity:'error', summary:'Suceso', detail:'es requerida'});
+    }
+    return res;
   }
 
   onUpload(event) {
