@@ -3,6 +3,10 @@ import { CategoriasService } from '../../services/categorias/categorias.service'
 import { CapasService } from '../../services/capas/capas.service'
 import { FlashMessagesService } from 'angular2-flash-messages';
 import * as L from 'leaflet';
+import * as Turf from '@turf/turf';
+import * as leafletImage from 'leaflet-image';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+
 
 @Component({
   selector: 'app-inicio',
@@ -13,12 +17,12 @@ export class InicioComponent implements OnInit {
 
 
   activeMap: any;
-  geoJsons: any;
 
   baseMaps: any;
   overlayMaps: any;
   control: any;
 
+  geoJsons: any;
 
   agregarDatosActivado: boolean;
   editarDatosActivado: boolean;
@@ -60,27 +64,91 @@ export class InicioComponent implements OnInit {
 
   valorBusqueda: string;
   
+  fotoControl: any;
+  filterControl: any;
+  filterControl2: any;
   searchControl: any;
+  medirDistanciaControl: any;
+  medirAreaControl: any;
   searchPoint: any;
 
   marcadorBusqueda: any;
   colocandoPersona: boolean;
   personaPorColocar: boolean;
+  
+  medidaDistancia: number;
+  medidaArea: number;
+
+	latkm: number;
+	lngkm: number;
+
+	controlAbajo: boolean;
+
+	interaccionCortada: boolean;
+
+	dibujandoPunto: boolean;
+	dibujandoCamino: boolean;
+	dibujandoPoligono: boolean;
+	datosIconHovered: string;
+	datosHovered: string;
+	filterHovered: boolean;
+	pointHovered: boolean;
+	distanceHovered: boolean;
+	areaHovered: boolean;
+	unidadDistancia: string;
+	unidadPerimetro: string;
+	unidadArea: string;
+
+	claseBotonFiltro: string;
+
+	foto: any;
+	fotoDibujada: boolean;
+
 
   constructor(
-
   			private flashMessage: FlashMessagesService,
   			private categoriasService: CategoriasService,
-  			private capasService: CapasService) { }
+  			private capasService: CapasService,
+  			private modalService: NgbModal) { }
 
   ngOnInit() {
+
+  	if(window.localStorage.lastLayer){
+  		window.localStorage.removeItem("lastLayer");
+  	}
+
+	this.claseBotonFiltro = "leaflet-control-layers leaflet-control leaflet-control-layers-expanded nomargin";
+
+  	this.unidadDistancia = "Km";
+  	this.unidadArea = "Km2";
+  	this.unidadPerimetro = "Km";
+
+  	this.interaccionCortada = false;
+
+  	this.controlAbajo = false;
+  	console.log("Control: "+this.controlAbajo);
+    var polygon = Turf.polygon([[[125, -15], [113, -22], [154, -27], [144, -15], [125, -15]]]);
+    var area = Turf.area(polygon);
+
+    console.log(area);
+
+  this.latkm = this.getKilometros(0,0,1,0);
+  this.lngkm = this.getKilometros(0,0,0,1);
+
+	this.medidaDistancia = 0;
+	this.medidaArea = 0;
+	
+	this.medirDistanciaControl = {};
+	this.medirAreaControl = {};
 
 	this.colocandoPersona = false;
 	this.personaPorColocar = false;
   	
   	this.searchPoint = {
   		"lng": 0,
-  		"lat": 0
+  		"lat": 0,
+  		"radius": 1,
+  		"area": 0
   	};
 
   	this.categoriaActiva = "";
@@ -109,35 +177,7 @@ export class InicioComponent implements OnInit {
   	this.overlayMaps = {};
   	this.geoJsons = [];
 
-  	this.geojsonEditable = {
-	  "type": "Feature",
-	  "geometry": {
-	    "type": "",
-	    "coordinates": []
-	  },
-	  "properties": {
-	  }
-	}  	
-
-	this.geojsonVertices = {
-	  "type": "FeatureCollection",
-	  "features": []
-	}  	
-
-	this.geojsonCamino = {
-	  "type": "FeatureCollection",
-	  "features": []
-	}	
-
-	this.geojsonFigura = {
-	  "type": "Feature",
-	  "geometry": {
-	    "type": "Polygon",
-	    "coordinates": []
-	  },
-	  "properties": {
-	  }
-	}
+  	this.inicializarGeojsons();
 
 	if(window.localStorage.capaActiva){
 		window.localStorage.removeItem("capaActiva");
@@ -148,7 +188,7 @@ export class InicioComponent implements OnInit {
 
   	this.loading = false;
 
-	this.flashMessage.show('Bienvenido!', { cssClass: 'alert-success', timeout: 1000 });
+	this.flashMessage.show('Bienvenido!', { cssClass: 'alert-success', timeout: 3000 });
 
     eval("window.yo = this");
 
@@ -221,53 +261,6 @@ export class InicioComponent implements OnInit {
   }
 
 
-	prevenirInteraccion(){
-		
-		this.activeMap.dragging.disable();
-		this.activeMap.doubleClickZoom.disable();
-	}
-	
-	permitirInteraccion(){
-
-		this.activeMap.dragging.enable();
-		this.activeMap.doubleClickZoom.enable();
-	}
-
-	obtenerPunto(ev){
-
-		this.personaPorColocar = true;
-		this.flashMessage.show('Haga click en el mapa para obtener las coordenadas', { cssClass: 'alert-info', timeout: 4000 });
-	}
-	
-	encontrarPunto(){
-
-		let init = this;
-
-		if(this.marcadorBusqueda) this.activeMap.removeLayer(this.marcadorBusqueda);
-		this.colocandoPersona = false;
-
-		console.log("break 1");
-		this.activeMap.setView([this.searchPoint.lat, this.searchPoint.lng]);
-
-		let popupDiv = document.createElement("div");
-		let boton = document.createElement("button");
-		boton.setAttribute("class","btn btn-danger");
-		boton.innerHTML='<i class="fa fa-times" aria-hidden="true"></i>';
-		boton.addEventListener("click", function(){
-			
-			init.activeMap.removeLayer(init.marcadorBusqueda);
-		});
-		popupDiv.appendChild(boton);
-
-		console.log("break 2");
-		this.marcadorBusqueda = L.circle([this.searchPoint.lat, this.searchPoint.lng],{
-		    color: 'red',
-		    fillColor: '#f03',
-		    fillOpacity: 0.5,
-		    radius: 500
-		}).bindPopup(popupDiv).addTo(this.activeMap);
-	}
-
 
   initDraw(){
 
@@ -283,17 +276,24 @@ export class InicioComponent implements OnInit {
 	    attribution: 'Carto Tiles | CSUDO'
 	});
 
+      const satelite_provider = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          attribution: 'Satelital | CSUDO'
+      });
+
 	this.activeMap = L.map('mapid', {
 		center: [10.456389, -64.1675],
 		zoom: 11,
+		zoomControl: false,
 		layers: [osm]
 	});
-	
-	this.configurarControlBusqueda();
+
+	this.configurarControlDatos();
+	this.configurarControlFoto();
 
 	this.baseMaps = {
 	    "OSM": osm,
-	    "Carto": carto
+	    "Carto": carto,
+		"Satelite": satelite_provider
 	};
 
 	this.overlayMaps = {
@@ -301,9 +301,14 @@ export class InicioComponent implements OnInit {
 	};
 
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
+	this.control.setPosition('topleft');
+
+
+	L.control.zoom().addTo(this.activeMap);
 
 	this.activeMap.on("click", (ev) =>{
 
+		if(this.interaccionCortada) return false;
 
 		if(this.colocandoPersona){
 
@@ -320,20 +325,24 @@ export class InicioComponent implements OnInit {
 
 		else{
 
-			if(!this.insertandoVertice){
-	
-				if(!this.popupOpened && !this.moviendoVertice){
-	
-					if(!this.caminoCerrado){
-	
-						if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
-						if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+			if(window.localStorage.capaActiva){
+
+				if(!this.insertandoVertice){
+		
+					if(!this.popupOpened && !this.moviendoVertice){
+		
+						if(!this.caminoCerrado){
+		
+							if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
+							if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+						}
+						this.addPointToArr(ev.latlng.lng, ev.latlng.lat);
 					}
-					this.addPointToArr(ev.latlng.lng, ev.latlng.lat);
-				}
-				if(this.moviendoVertice){
-					this.moverVertice(ev.latlng, 2);
-				}
+					if(this.moviendoVertice){
+						this.moverVertice(ev.latlng, 2);
+					}
+				}				
+				
 			}
 			
 		}
@@ -352,13 +361,18 @@ export class InicioComponent implements OnInit {
 
 	this.activeMap.scrollWheelZoom.disable()
 	
-	let este = this;
+	let init = this;
 
 
 	window.addEventListener("keydown", function(e){
 
 		if(e.keyCode == 16){
-			este.activeMap.scrollWheelZoom.enable()
+			init.activeMap.scrollWheelZoom.enable()
+		}
+
+		if(e.keyCode == 17){
+			init.controlAbajo = true;
+		  	console.log("Control: "+init.controlAbajo);
 		}
 
 	});
@@ -366,44 +380,333 @@ export class InicioComponent implements OnInit {
 	window.addEventListener("keyup", function(e){
 
 		if(e.keyCode == 16){
-			este.activeMap.scrollWheelZoom.disable()
+			init.activeMap.scrollWheelZoom.disable()
+		}
+
+		if(e.keyCode == 17){
+			init.controlAbajo = false;
+		  	console.log("Control: "+init.controlAbajo);
 		}
 
 	});
 
+	this.configurarControlFiltro2();
+	this.configurarControlDistancia();
+	this.configurarControlArea();
+	this.configurarControlBusqueda();
+//	this.configurarControlFiltro();
+  }
+
+shout(mensaje, estilo, tiempo){
+	this.flashMessage.show(mensaje, { cssClass: estilo, timeout: tiempo });
+}
+
+calcularAreaPunto(){
+
+  	this.searchPoint.area = Math.PI*(this.searchPoint.radius*this.searchPoint.radius);
+  }
+
+  inicializarGeojsons(){
+
+  	this.geojsonEditable = {
+	  "type": "Feature",
+	  "geometry": {
+	    "type": "",
+	    "coordinates": []
+	  },
+	  "properties": {
+	  }
+	}  	
+
+	this.geojsonVertices = {
+	  "type": "FeatureCollection",
+	  "features": []
+	}  	
+
+	this.geojsonCamino = {
+	  "type": "FeatureCollection",
+	  "features": []
+	}	
+
+	this.geojsonFigura = {
+	  "type": "Feature",
+	  "geometry": {
+	    "type": "Polygon",
+	    "coordinates": []
+	  },
+	  "properties": {
+	  }
+	}
+
+  }
+
+  limpiarEditables(){
+
+  	if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
+  	if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+  	if(this.figuraEnEdicion) this.activeMap.removeLayer(this.figuraEnEdicion);
+
   }
   
-  configurarControlBusqueda(){
+	getKilometros(lat1,lon1,lat2,lon2){
+		
+		var rad = function(x) {return x*Math.PI/180;}
+		var R = 6378.137; //Radio de la tierra en km
+		var dLat = rad( lat2 - lat1 );
+		var dLong = rad( lon2 - lon1 );
+		var a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(rad(lat1)) * Math.cos(rad(lat2)) * Math.sin(dLong/2) * Math.sin(dLong/2);
+		var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		var d = R * c;
+		return d; //Retorna tres decimales
+	}
+  
+	medirCaminoDibujado(){
+
+		let init = this;
+
+		this.dibujandoCamino = true;
+		this.dibujandoPoligono = false;
+		this.dibujandoPunto = false;
+
+		this.inicializarGeojsons();
+		this.limpiarEditables();
+		window.localStorage.coordenadas = JSON.stringify([])
+		this.medidaDistancia = 0;
+		this.medidaArea = 0;
+
+		setTimeout(()=>{
+			
+			init.flashMessage.show('Comience a dibujar el camino', { cssClass: 'alert-info', timeout: 4000 });
+			window.localStorage.capaActiva = JSON.stringify({'tipo': 'LineString','geometria': 'LineString', 'coordenadas':[]});
+		}, 500)
+		
+	}
+	
+	medirCaminoElegido(){
+
+		
+	}
+	
+	medirAreaDibujada(){
+
+		let init = this;
+
+		this.dibujandoCamino = false;
+		this.dibujandoPoligono = true;
+		this.dibujandoPunto = false;
+
+		
+		this.inicializarGeojsons();
+		this.limpiarEditables();
+		window.localStorage.coordenadas = JSON.stringify([[]])
+		this.medidaDistancia = 0;
+		this.medidaArea = 0;
+
+		setTimeout(()=>{
+			
+			init.flashMessage.show('Comience a dibujar el poligono', { cssClass: 'alert-info', timeout: 4000 });
+			window.localStorage.capaActiva = JSON.stringify({'tipo': 'Polygon', 'geometria': 'Polygon', 'coordenadas':[[]]});
+		}, 500)
+		
+		
+	}
+	
+	medirAreaElegida(){
+
+		
+
+
+		
+	}
+
+	prevenirInteraccion(el){
+		
+		if(el == 'd'){
+			this.distanceHovered = true;
+		}		
+		if(el == 'a'){
+			this.areaHovered = true;
+		}
+		if(el == 'p'){
+			this.pointHovered = true;
+		}		
+		if(el == 'f'){
+			this.filterHovered = true;
+		}
+		if(el == 'i'){
+			let a = document.querySelectorAll("#formularioDatos>div")
+			a[0]["style"]="display: none;" 
+			a[1]["style"]="display: block;" 
+		}
+		if(el == 'p'){
+			let a = document.querySelectorAll("#formularioFoto>div")
+			a[0]["style"]="display: none;" 
+			a[1]["style"]="display: block;" 
+		}
+
+		console.log("Cortando...");
+		this.interaccionCortada = true;
+		this.activeMap.dragging.disable();
+		this.activeMap.doubleClickZoom.disable();
+	}
+	
+	permitirInteraccion(el){
+
+		if(el == 'd'){
+			this.distanceHovered = false;
+		}		
+		if(el == 'a'){
+			this.areaHovered = false;
+		}
+		if(el == 'p'){
+			this.pointHovered = false;
+		}
+		if(el == 'f'){
+			this.filterHovered = false;
+		}		
+		if(el == 'i'){
+			let a = document.querySelectorAll("#formularioDatos>div")
+			a[0]["style"]="display: block;" 
+			a[1]["style"]="display: none;" 
+		}
+		if(el == 'p'){
+			let a = document.querySelectorAll("#formularioFoto>div")
+			a[0]["style"]="display: block;" 
+			a[1]["style"]="display: none;" 
+		}
+
+		console.log("Reactivando...");
+		this.interaccionCortada = false;
+		this.activeMap.dragging.enable();
+		this.activeMap.doubleClickZoom.enable();
+	}
+
+	limpiarPunto(){
+
+		this.dibujandoPunto = false;		
+		if(this.marcadorBusqueda) this.activeMap.removeLayer(this.marcadorBusqueda);	
+	}
+
+	limpiarPoligono(){
+
+		this.dibujandoPoligono = false;		
+		if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+		if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
+		if(this.figuraEnEdicion) this.activeMap.removeLayer(this.figuraEnEdicion);
+
+		this.inicializarGeojsons();
+		this.limpiarEditables();
+		window.localStorage.coordenadas = JSON.stringify([[]])
+		this.medidaDistancia = 0;
+		this.medidaArea = 0;
+	}
+
+	limpiarCamino(){
+
+		this.dibujandoCamino = false;
+		if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
+		if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
+
+		this.inicializarGeojsons();
+		this.limpiarEditables();
+		window.localStorage.coordenadas = JSON.stringify([])
+		this.medidaDistancia = 0;
+		this.medidaArea = 0;
+	}
+
+	obtenerPunto(ev){
+
+		this.dibujandoCamino = false;
+		this.dibujandoPoligono = false;
+		this.dibujandoPunto = true;
+
+		this.personaPorColocar = true;
+		this.flashMessage.show('Haga click en el mapa para obtener las coordenadas', { cssClass: 'alert-info', timeout: 4000 });
+	}
+	
+	encontrarPunto(){
+
+		let init = this;
+
+		this.dibujandoCamino = false;
+		this.dibujandoPoligono = false;
+		this.dibujandoPunto = true;
+
+
+		if(this.marcadorBusqueda) this.activeMap.removeLayer(this.marcadorBusqueda);
+		this.colocandoPersona = false;
+
+		console.log("break 1");
+		this.activeMap.setView([this.searchPoint.lat, this.searchPoint.lng]);
+
+		this.calcularAreaPunto();
+
+		let popupDiv = document.createElement("div");
+		let boton = document.createElement("button");
+		boton.setAttribute("class","btn btn-danger");
+		boton.innerHTML='<i class="fa fa-times" aria-hidden="true"></i>';
+		boton.addEventListener("click", function(){
+
+			init.dibujandoPunto = false;			
+			init.activeMap.removeLayer(init.marcadorBusqueda);
+		});
+		popupDiv.appendChild(boton);
+
+		console.log("break 2");
+		this.marcadorBusqueda = L.circle([this.searchPoint.lat, this.searchPoint.lng],{
+		    color: 'red',
+		    fillColor: '#f03',
+		    fillOpacity: 0.5,
+		    radius: this.searchPoint.radius
+		}).bindPopup(popupDiv).addTo(this.activeMap);
+	}
+
+	
+
+	toggleFilter(){
+		
+		if(this.capasActivas.length==0){
+			this.shout("No ha cargado ninguna capa que pueda filtrar aun", "alert-warning", 3000);
+			return false;
+		}
+		
+		if(this.claseBotonFiltro == "leaflet-control-layers leaflet-control leaflet-control-layers-expanded nomargin"){
+			this.claseBotonFiltro = "leaflet-control-layers leaflet-control leaflet-control-layers-expanded nomargin";
+			document.getElementById("modalFiltro").click();
+		}
+		else{
+			this.claseBotonFiltro = "leaflet-control-layers leaflet-control leaflet-control-layers-expanded nomargin";
+		}
+	}
+
+	limpiarFormularioFiltro(){
+
+		this.valorBusqueda = "";
+		this.filtroElegido = "";
+		this.atributoFiltrado = "";
+		this.layerToFilter = "";
+
+	}
+
+
+  configurarControlFiltro(){
   	
 ///INICIO CONTROL
 	
 	let init = this;
 	
-	L.Control.Search = L.Control.extend({
+	L.Control["Filtro"] = L.Control.extend({
   options: {
-    // topright, topleft, bottomleft, bottomright
-    position: 'topright',
-    placeholder: 'Search...'
+
+    position: 'topright'
   },
-  initialize: function (options /*{ data: {...}  }*/) {
-    // constructor
+  initialize: function (options) {
+
     L.Util.setOptions(this, options);
   },
   onAdd: function (map) {
-    // happens after added to map
-    
-//    var container = L.DomUtil.create('div', 'leaflet-control-layers leaflet-control leaflet-control-layers-expanded');
 
-    this.form = document.getElementById("formularioPunto")
-/*  var group = L.DomUtil.create('div', 'form-group', this.form);
-    var input1 = L.DomUtil.create('input', 'form-group', group);
-    var input2 = L.DomUtil.create('input', 'form-group', group);
-    input1.type = 'number';
-    input1.id = 'number';
-    input1.placeholder = "longitud";
-    input2.type = 'number';
-    input2.placeholder = "latitud";
-*/
+    this.form = document.getElementById("formularioFiltro");
     return this.form;
   },
   onRemove: function (map) {
@@ -417,13 +720,271 @@ export class InicioComponent implements OnInit {
 
 ///FIN CONTROL
 
-	L.control.search = function(id, options) {
-	  return new L.Control.Search(id, options);
+	L.control["filtro"] = function(id, options) {
+	  return new L.Control["Filtro"](id, options);
 	}
 
 	var items = [];
 
-	this.searchControl = L.control.search({
+	this.filterControl = L.control["filtro"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }  
+
+  configurarControlFiltro2(){
+  	
+///INICIO CONTROL
+	
+	let init = this;
+	
+	L.Control["Filtro2"] = L.Control.extend({
+  options: {
+
+    position: 'topright'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioFiltro2");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["filtro2"] = function(id, options) {
+	  return new L.Control["Filtro2"](id, options);
+	}
+
+	var items = [];
+
+	this.filterControl2 = L.control["filtro2"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }  
+
+
+  configurarControlDatos(){
+  	
+///INICIO CONTROL
+	
+	let init = this;
+	
+	L.Control["Datos"] = L.Control.extend({
+  options: {
+
+    position: 'topleft'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioDatos");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["datos"] = function(id, options) {
+	  return new L.Control["Datos"](id, options);
+	}
+
+	var items = [];
+
+	this.filterControl2 = L.control["datos"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }
+
+  configurarControlFoto(){
+  	
+///INICIO CONTROL
+	
+	let init = this;
+	
+	L.Control["Foto"] = L.Control.extend({
+  options: {
+
+    position: 'topleft'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioFoto");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["foto"] = function(id, options) {
+	  return new L.Control["Foto"](id, options);
+	}
+
+	var items = [];
+
+	this.fotoControl = L.control["foto"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }
+
+  
+  configurarControlBusqueda(){
+  	
+///INICIO CONTROL
+	
+	let init = this;
+	
+	L.Control["Search"] = L.Control.extend({
+  options: {
+
+    position: 'topright'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioPunto");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["search"] = function(id, options) {
+	  return new L.Control["Search"](id, options);
+	}
+
+	var items = [];
+
+	this.searchControl = L.control["search"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }  
+  
+  configurarControlDistancia(){
+  	
+///INICIO CONTROL
+	
+
+	L.Control["MedirDistancia"] = L.Control.extend({
+  options: {
+
+    position: 'topright'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioDistancia");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["medirDistancia"] = function(id, options) {
+	  return new L.Control["MedirDistancia"](id, options);
+	}
+
+	var items = [];
+
+	this.medirDistanciaControl = L.control["medirDistancia"]({
+	  data: items
+	}).addTo(this.activeMap);
+	
+  }
+  
+  configurarControlArea(){
+  	
+///INICIO CONTROL
+	
+
+	L.Control["MedirArea"] = L.Control.extend({
+  options: {
+
+    position: 'topright'
+  },
+  initialize: function (options) {
+
+    L.Util.setOptions(this, options);
+  },
+  onAdd: function (map) {
+
+    this.form = document.getElementById("formularioArea");
+    return this.form;
+  },
+  onRemove: function (map) {
+    // when removed
+  },
+  submit: function(e) {
+    L.DomEvent.preventDefault(e);
+  }
+});
+
+
+///FIN CONTROL
+
+	L.control["medirArea"] = function(id, options) {
+	  return new L.Control["MedirArea"](id, options);
+	}
+
+	var items = [];
+
+	this.medirAreaControl = L.control["medirArea"]({
 	  data: items
 	}).addTo(this.activeMap);
 	
@@ -450,7 +1011,7 @@ export class InicioComponent implements OnInit {
   	}
 
   	if(estilo == "Point"){
-  	
+
 		return {
 			radius: 8,
 			fillColor: "#ff7800",
@@ -486,6 +1047,7 @@ export class InicioComponent implements OnInit {
 
   	let tipo = "";
 	let coordenadas = [];
+
 
   	if(window.localStorage.capaActiva){
 
@@ -565,7 +1127,9 @@ export class InicioComponent implements OnInit {
 	  	else{
 
 	  		console.log("No habia coordenadas");
-	  		coordenadas = [lng, lat];
+	  		if(tipo == 'LineString'){coordenadas.push([lng, lat]);}
+	  		if(tipo == 'Point'){coordenadas.push([]);coordenadas[0].push([lng, lat])}
+	  		if(tipo == 'Polygon'){coordenadas.push([]);coordenadas[0].push([lng, lat])}
 	  		console.log(coordenadas);
 	  		window.localStorage.coordenadas = JSON.stringify(coordenadas);
 	  	}
@@ -584,6 +1148,7 @@ export class InicioComponent implements OnInit {
 	if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
 
 	this.geojsonCamino.features = [];
+	this.medidaDistancia = 0;
 
 	console.log(coordenadas);
   	for(let i = 0, j = coordenadas.length; i<j-1; i++){
@@ -599,25 +1164,39 @@ export class InicioComponent implements OnInit {
 
 		this.geojsonCamino.features.push(camino);
   	}
-
+/*
 		this.caminoEnEdicion = L.geoJSON(this.geojsonCamino, {style: {
 			"color": '#FFFF00',
-			"weight": 5,
+			"weight": 2,
 			"opacity": 0.65
 			}
 		}).addTo(this.activeMap);
+*/
+		this.caminoEnEdicion = L.geoJSON(this.geojsonCamino, {style: this.estiloEdicion}).addTo(this.activeMap);
 
 		let init = this;
 
-		this.caminoEnEdicion.eachLayer((layer) =>{ 
-								
+		this.caminoEnEdicion.eachLayer((layer) =>{
+				 				
 			
 			layer.on("preclick", (ev)=>{
 				
-				init.insertandoVertice = true;
-				init.insertarVertice(ev);
-			});
+				if(window.localStorage.capaActiva && !init.controlAbajo){
+					init.insertandoVertice = true;
+					init.insertarVertice(ev);					
+				}
 
+			});
+			let coords = layer.feature.geometry.coordinates;
+			//let km = init.getKilometros(coords[0][0],coords[0][1],coords[1][0],coords[1][1]);
+			let from = Turf.point([coords[0][0],coords[0][1]]);
+			let to = Turf.point([coords[1][0],coords[1][1]]);
+			let options = {units: 'Kilometers'};
+			let km = Turf.distance(from, to, {units: 'kilometers'});
+			layer.bindPopup("Distancia (Km.): "+km);
+			init.medidaDistancia = init.medidaDistancia+km;
+			console.log(km);
+			console.log(init.medidaDistancia);
 		});
 
 
@@ -1071,7 +1650,7 @@ export class InicioComponent implements OnInit {
 
 
 	this.geojsonFigura.geometry.coordinates = coordenadas;
-	
+/*	
 	this.figuraEnEdicion = L.geoJSON(this.geojsonFigura, {style: {
 										fillColor: '#bdd7e7',
 									    weight: 2,
@@ -1079,7 +1658,10 @@ export class InicioComponent implements OnInit {
 									    color: 'white',
 									    dashArray: '3',
 									    fillOpacity: 0.7} 
-									}).addTo(this.activeMap);
+									}).addTo(this.activeMap);	
+*/
+
+	this.figuraEnEdicion = L.geoJSON(this.geojsonFigura, {style: this.estiloEdicion}).addTo(this.activeMap);
 
 	this.caminoCerrado = true;
 
@@ -1087,11 +1669,94 @@ export class InicioComponent implements OnInit {
 
 		this.levantarCamino(coordenadas[0]);
 	}
+	/*
+	let xlng = [];
+	let ylat = [];
+	
+	for(let i = 0, j = coordenadas[0].length; i<j; i++){
+		
+		xlng.push(this.getKilometros(0,0,0,coordenadas[0][i][0]));
+		ylat.push(this.getKilometros(0,0,coordenadas[0][i][1],0));
+	}
+	
+	this.medidaArea = this.areaPoligono(coordenadas[0]);
+	*/
+	console.log("Coordenadas para turf...");
+	console.log(coordenadas[0]);
+	var poligono = Turf.polygon([coordenadas[0]]);
+	this.medidaArea = (Turf.area(poligono)/1000000);
 	console.log(coordenadas);
 	console.log(oldCoords);
 	this.levantarVertices('Polygon', oldCoords);
 
   }
+
+	areaPoligono(coordenadas){
+
+		var equises = [];
+		var yeses = [];
+
+		coordenadas.forEach((element) =>{
+
+			/*
+			if(element[0]>0){
+				equises.push(this.getKilometros(0,0,0,element[0]));				
+			}
+			else{
+				equises.push(-1*this.getKilometros(0,0,0,element[0]));				
+			}
+			
+			if(element[1]>0){
+				yeses.push(this.getKilometros(0,element[0],element[1],element[0]));
+			}
+			else{
+				yeses.push(-1*this.getKilometros(0,element[0],element[1],element[0]));
+			}
+			*/
+			
+			equises.push(element[0]*111320.7)
+			yeses.push(element[1]*110567.2)
+			
+		});
+
+		console.log("Kilometros metodo nuevo");		
+		console.log(equises);
+		console.log(yeses);
+			
+		let multi1 = [];
+		let multi2 = [];
+
+		console.log("Testing area calculation...");
+
+		for(let i = 0, j = equises.length-1; i<j; i++){
+			
+			multi1.push(equises[i]*yeses[i+1]);
+			multi2.push(yeses[i]*equises[i+1]);
+		console.log(""+equises[i]+" * "+yeses[i+1]+" = "+multi1[i] );
+		console.log(""+yeses[i]+" * "+equises[i+1]+" = "+multi2[i] );
+		}		
+		/*
+		for(let i = equises.length-1, j = 0; i>j; i--){
+			
+			multi2.push(equises[i]*yeses[i-1])
+			console.log(""+equises[i]+" * "+yeses[i-1]+" = "+multi2[multi2.length-1] );
+		}
+		*/
+		let sum1 = 0;
+		multi1.forEach((element) =>{
+			sum1+=element;
+		});		
+		
+		console.log("SUM1:  "+sum1);
+		
+		let sum2 = 0;
+		multi2.forEach((element) =>{
+			sum2+=element;
+		});
+		console.log("SUM2:  "+sum2);
+		
+		return Math.abs((sum1-sum2)/2);
+	}
 
   trancarExterno(){
 
@@ -1270,8 +1935,10 @@ export class InicioComponent implements OnInit {
   addOverlayToControl(capaNueva){
 
   	let geoJson = capaNueva.geojson;
+  	let tipo = this.capas.find((element) =>{return element.nombre == capaNueva.nombre}).tipo;
 
-	switch(geoJson.features[0].geometry.type){
+
+	switch(tipo){
 
 		case 'Polygon':
 		case 'MultiPolygon':
@@ -1355,6 +2022,27 @@ export class InicioComponent implements OnInit {
 				ul.appendChild(li);
 			}
 		});
+
+		if(feature.geometry.type == "Polygon"){
+
+				let area = document.createElement("li");
+				area.innerHTML = "Area (Km2.): "+(Turf.area(feature)/1000000);
+				ul.appendChild(area);				
+
+				let dist = 0;
+
+				for(let i = 0, j = feature.geometry.coordinates[0].length-1; i<j; i++){
+					
+					let p1 = feature.geometry.coordinates[0][i];
+					let p2 = feature.geometry.coordinates[0][i+1];
+
+					dist+= Turf.distance(p1, p2);
+				}
+
+				let perimetro = document.createElement("li");
+				perimetro.innerHTML = "Perimetro (Km.): "+dist;
+				ul.appendChild(perimetro);
+		}
 		popupDiv.appendChild(ul);
 		layer.bindPopup(popupDiv);
 	}
@@ -1367,7 +2055,8 @@ export class InicioComponent implements OnInit {
 
 	this.activeMap.removeControl(this.control);
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
-
+	this.control.setPosition('topleft');
+	
 	this.capasActivas = Object.keys(this.overlayMaps);
 
 	if(capaNueva.dontpush){
@@ -1386,6 +2075,7 @@ export class InicioComponent implements OnInit {
   addLineLayerToControl(capaNueva, estilo){
 
   	let atributos = Object.getOwnPropertyNames(capaNueva.geojson.features[0].properties);
+
 	let popup = function(feature, layer){
 
 	  	let popupDiv = document.createElement("div");
@@ -1400,6 +2090,7 @@ export class InicioComponent implements OnInit {
 				ul.appendChild(li);
 			}
 		});
+
 		popupDiv.appendChild(ul);
 		layer.bindPopup(popupDiv);
 	}
@@ -1412,6 +2103,7 @@ export class InicioComponent implements OnInit {
 
 	this.activeMap.removeControl(this.control);
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
+	this.control.setPosition('topleft');
 
 	this.capasActivas = Object.keys(this.overlayMaps);
 
@@ -1423,6 +2115,8 @@ export class InicioComponent implements OnInit {
   addPointLayerToControl(capaNueva, estilo){
 
   	let atributos = Object.getOwnPropertyNames(capaNueva.geojson.features[0].properties);
+  	//let att = this.capas.find((element) =>{return element.nombre == capaNueva.nombre}).atributos;
+  	//let atributos = att.filter((element) =>{return element.nombre != "geom"});
 	let popup = function(feature, layer){
 
 	  	let popupDiv = document.createElement("div");
@@ -1437,6 +2131,16 @@ export class InicioComponent implements OnInit {
 				ul.appendChild(li);
 			}
 		});
+
+				let lat = document.createElement("li");
+				lat.innerHTML = "Latitud: "+feature.geometry.coordinates[1];
+				ul.appendChild(lat);
+
+				let lng = document.createElement("li");
+				lng.innerHTML = "Longitud: "+feature.geometry.coordinates[0];
+				ul.appendChild(lng);
+
+
 		popupDiv.appendChild(ul);
 		layer.bindPopup(popupDiv);
 	}
@@ -1453,6 +2157,7 @@ export class InicioComponent implements OnInit {
 
 	this.activeMap.removeControl(this.control);
 	this.control = L.control.layers(this.baseMaps, this.overlayMaps).addTo(this.activeMap);
+	this.control.setPosition('topleft');
 
 	this.capasActivas = Object.keys(this.overlayMaps);
 
@@ -1567,16 +2272,27 @@ export class InicioComponent implements OnInit {
 
   refrescarMapa(evento){
 
+
   	console.log(evento);
 
 	if(this.verticesEnEdicion) this.activeMap.removeLayer(this.verticesEnEdicion);
 	if(this.caminoEnEdicion) this.activeMap.removeLayer(this.caminoEnEdicion);
 	if(this.figuraEnEdicion) this.activeMap.removeLayer(this.figuraEnEdicion);
+	if(this.puntosEnEdicion) this.activeMap.removeLayer(this.puntosEnEdicion);
+
+  	if(!evento){
+
+  		if(window.localStorage.capaActiva) window.localStorage.removeItem("capaActiva");
+  		if(window.localStorage.coordenadas) window.localStorage.removeItem("coordenadas");
+  		return false;
+  	}
 
   	this.activeMap.removeLayer(this.overlayMaps[""+evento.nombre]);
 
   	evento.dontpush = true;
 
+  	let indice = this.geoJsons.findIndex((element) =>{return element.nombre == evento.nombre});
+  	this.geoJsons[indice] = evento;
 	this.addOverlayToControl(evento);
   }
 
@@ -1621,5 +2337,104 @@ export class InicioComponent implements OnInit {
   	}
 
   }
+
+  openFilter(content) {
+
+    this.modalService.open(content,{ windowClass: 'dark-modal' }).result.then((result) => {
+
+		console.log("Saludos");
+
+    }, (reason) => {
+
+    });
+
+			var el = document.getElementsByClassName("modal-content");
+			el[0].setAttribute("style","background-color: rgba(255,255,255,0.4)");
+
+    	setTimeout(() =>{
+			/*
+			var el2 = document.getElementById("filterSet");
+			el2.setAttribute("style","background-color: rgba(255,255,255,0.1); border: 3px solid rgba(221, 221, 221, 0.4)");
+			*/
+    	}, 100)
+  }
+
+  limpiarFiltro(){
+
+  	if(this.overlayMaps[""+this.layerToFilter]){
+  		this.activeMap.removeLayer(this.overlayMaps[""+this.layerToFilter]);
+  	}
+
+  	let geojson = this.geoJsons.find((element) =>{return element.nombre == this.layerToFilter}).geojson;
+
+
+  	let capaNueva = {
+  		"nombre": this.layerToFilter,
+  		"geojson": {
+  			"type": geojson.type,
+  			"features": geojson.features
+  		},
+  		"dontpush": true
+  	}
+
+  	console.log(capaNueva);
+	this.addOverlayToControl(capaNueva);
+  
+  }
+
+  	tomarFoto(){
+		
+		this.shout("Espere un momento mientras su imagen es capturada", "alert-info", 3000);
+		this.loading = true;
+		
+		let init = this;
+		
+		leafletImage(this.activeMap, function(err, canvas){
+		
+			var img = document.createElement("img");
+			var size = init.activeMap.getSize();
+		
+			img.width = size.x;
+			img.height = size.y;
+
+			img.src = canvas.toDataURL();
+			
+			let init2 = init;
+			
+			img.addEventListener("load", function(ev){
+				
+				init2.dibujarFoto(img);
+				init2.fotoDibujada = true;
+				init2.loading = false;
+				init2.foto = img;
+			})
+		});
+	}
+	
+	dibujarFoto(img){
+
+		var canvas = document.createElement("canvas");
+		canvas.setAttribute("id","myCanvas");
+		canvas.width = 150;
+		canvas.height = 150;
+
+		var ctx = canvas.getContext("2d");
+		
+
+		if(!document.getElementById("myCanvas")){
+			document.getElementById("fotoCanvas").appendChild(canvas);
+		}
+			
+		ctx.drawImage(img, 0, 0, 150, 150);
+	}
+	
+	descargarFoto(){
+
+		var link = document.createElement("a");
+		link.href = this.foto.src;
+		link.download = 'Download.jpg';
+		link.click();
+		
+	}
 
 }

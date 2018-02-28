@@ -1,9 +1,31 @@
-#mapid { height: 700px; }
+#mapid {
+	height: 700px;
+}
+
+div.modal-dialog{
+	max-width: 600px;
+}
 
 .row-full{
  width: 100vw;
  position: relative;
  margin-left: -50vw;
- margin-top: 100px;
  left: 50%;
+}
+
+div.nomargin, div.nomargin *{
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+input.map-input {
+    max-width: 100px;
+}
+
+.dark-modal .modal-content {
+	background-color: #292b2c;
+	color: white;
+}
+.dark-modal .close {
+	color: white;   
 }
