@@ -250,14 +250,14 @@ export class ImportarCapasContent {
 		let imp = this;
 
 		let propiedades = Object.getOwnPropertyNames(capas._layers);
-		console.log(propiedades);
 
 		if(!propiedades.length) {
-			window.setTimeout(imp.checkFlag(capas), 100);
-		} 
+			console.log("MAL");
+			setTimeout(()=>{imp.checkFlag(capas)}, 1000);
+		}
 		
 		else {
-	
+			console.log("BIEN AL FIN!");	
 			imp.archivoConvertidoGeojson = {
 				"type": "FeatureCollection",
 				"features": []
@@ -289,7 +289,7 @@ export class ImportarCapasContent {
 
 					window["shp"](arrayBuffer).then(function(geojson){
 
-						window.archivoConvertidoGeojson = geojson;
+						window["archivoConvertidoGeojson"] = geojson;
 						imp.archivoConvertidoGeojson = geojson;
 						imp.button_class = "btn btn-outline-success";
 					});
@@ -313,7 +313,12 @@ export class ImportarCapasContent {
 
 					let capas = window["omnivore"].csv(csvDataURL);
 
-					imp.checkFlag(capas);					
+					imp.archivoConvertidoGeojson = {
+						"type": "FeatureCollection",
+						"features": []
+					};
+
+					imp.checkFlag(capas);
 
 				}, false);
 
@@ -437,24 +442,17 @@ export class ImportarCapasContent {
 
 				geojsonfr.addEventListener("load", (e)=>{
 
-					let geojsonDataURL = (e.target["result"]);
+					let geojsonText = (e.target["result"]);
 
-					let capas = window["omnivore"].geojson(geojsonDataURL);
+					let capas = JSON.parse(geojsonText);
 
-					imp.archivoConvertidoGeojson = {
-						"type": "FeatureCollection",
-						"features": []
-					};
-
-					capas._layers.forEach((element) =>{
-						imp.archivoConvertidoGeojson.features.push(element.feature);
-					});
+					imp.archivoConvertidoGeojson = capas;
 
 					imp.button_class = "btn btn-outline-success";
 
 				}, false);
 
-				geojsonfr.readAsDataURL(archivos[0]);
+				geojsonfr.readAsText(archivos[0]);
 
 
 			break;
