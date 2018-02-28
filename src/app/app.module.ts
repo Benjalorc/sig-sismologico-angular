@@ -4,10 +4,11 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule }   from '@angular/forms';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap/collapse/collapse.module';
 import { NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap/dropdown/dropdown.module';
+import { NgbPopoverModule } from '@ng-bootstrap/ng-bootstrap/popover/popover.module';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { FlashMessagesModule } from 'angular2-flash-messages';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+
 import {HttpClientModule} from '@angular/common/http';
 
 import { AppComponent } from './app.component';
@@ -21,10 +22,6 @@ import { ActualizarCategoriasComponent } from './components/categorias/actualiza
 import { EliminarCategoriasComponent } from './components/categorias/eliminar/eliminar.component';
 
 import { CategoriasService } from './services/categorias/categorias.service';
-import { CasosService } from './services/casos.service';
-import { SucesosService } from './services/sucesos.service';
-
-
 
 import { CapasComponent } from './components/capas/capas.component';
 import { CrearCapasComponent } from './components/capas/crear/crear.component';
@@ -39,20 +36,13 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
-import { CasosComponent } from './components/casos/casos.component';
-import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule }  from 'primeng/primeng';
-
-import { DropdownModule }  from 'primeng/components/dropdown/dropdown';
-import { SucesosComponent } from './components/sucesos/sucesos.component';
 import { ImportarCapasComponent, ImportarCapasContent } from './components/capas/importar/importar.component';
 
 const appRoutes : Routes = [
   { path: '', component: InicioComponent},
   { path: 'categorias', component: CategoriasComponent},
   { path: 'capas', component: CapasComponent},
-  { path: 'datos', component: DatosComponent},
-  { path: 'casos', component: CasosComponent},
-  { path: 'sucesos', component: SucesosComponent}
+  { path: 'datos', component: DatosComponent}
 ]
 
 @NgModule({
@@ -76,34 +66,22 @@ const appRoutes : Routes = [
     AgregarDatosComponent,
     BuscarDatosComponent,
     ActualizarDatosComponent,
-    EliminarDatosComponent,
-    CasosComponent,
-    SucesosComponent
+    EliminarDatosComponent
   ],
   entryComponents: [ImportarCapasContent],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes),
     NgbCollapseModule.forRoot(),
     NgbDropdownModule.forRoot(),
+    NgbPopoverModule.forRoot(),
     NgbModalModule.forRoot(),
     AngularFontAwesomeModule,
     FormsModule,
     FlashMessagesModule.forRoot(),
-    HttpClientModule,
-    InputMaskModule,
-    GrowlModule,
-    DataTableModule,
-    HttpClientModule,
-    InputTextModule,
-    DialogModule,
-    ButtonModule,
-    FileUploadModule,
-    DropdownModule,
-    DataListModule
+    HttpClientModule
   ],
-  providers: [CategoriasService, CapasService, DatosService, SucesosService,CasosService],
+  providers: [CategoriasService, CapasService, DatosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
