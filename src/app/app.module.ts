@@ -23,6 +23,11 @@ import { EliminarCategoriasComponent } from './components/categorias/eliminar/el
 
 import { CategoriasService } from './services/categorias/categorias.service';
 
+///INTEGRACION
+import { CasosService } from './services/casos.service';
+import { SucesosService } from './services/sucesos.service';
+///INTEGRACION//
+
 import { CapasComponent } from './components/capas/capas.component';
 import { CrearCapasComponent } from './components/capas/crear/crear.component';
 import { BuscarCapasComponent } from './components/capas/buscar/buscar.component';
@@ -36,6 +41,14 @@ import { BuscarDatosComponent } from './components/datos/buscar/buscar.component
 import { ActualizarDatosComponent } from './components/datos/actualizar/actualizar.component';
 import { EliminarDatosComponent } from './components/datos/eliminar/eliminar.component';
 import { DatosService } from './services/datos/datos.service';
+
+///INTEGRACION
+import { CasosComponent } from './components/casos/casos.component';
+import { InputTextModule, ButtonModule, DialogModule, InputMaskModule, GrowlModule, FileUploadModule, DataTableModule, DataListModule}  from 'primeng/primeng';
+
+import { DropdownModule }  from 'primeng/components/dropdown/dropdown';
+import { SucesosComponent } from './components/sucesos/sucesos.component';
+///INTEGRACION//
 import { ImportarCapasComponent, ImportarCapasContent } from './components/capas/importar/importar.component';
 
 const appRoutes : Routes = [

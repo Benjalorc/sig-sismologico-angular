@@ -5,6 +5,8 @@
    integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
    crossorigin=""></script>
 <p-growl [(value)]="msgs"></p-growl>
+
+
 <p-dialog header="Reportar nuevo caso" [(visible)]="display" modal="true" [width]="600" >
     <div class="ui-grid-row">
         <div class="ui-grid-col-2">
@@ -74,18 +76,13 @@
         </div>
     </div>
 
-    <p-fileUpload name="demo[]"  customUpload="true" (uploadHandler)="onUpload($event)" auto="true"
-        multiple="multiple" accept="image/*" maxFileSize="1000000" cancelLabel="Cancelar"
-        chooseLabel="Buscar" uploadLabel="Subir">
-
-    </p-fileUpload>
-
 
     <p-footer>
        <button type="button" pButton icon="fa-check" (click)="registrar()" label="Registrar"></button>
             <button type="button" pButton icon="fa-close" (click)="display=false" label="Cancelar"></button>
     </p-footer>
 </p-dialog>
+
 
 <div id="mapa" class="row-full"></div>
 
