@@ -37,7 +37,7 @@
 	<button type="button" class="btn btn-outline-danger" (click)="actualizarDato()">Eliminar<i class="fa fa-trash-o" aria-hidden="true"></i></button>
 	<button type="button" id="cerrar" class="btn btn-outline-warning" (click)="c('Close click')">Cancelar<i class="fa fa-times" aria-hidden="true"></i></button>
   </div>
+<i class="fa fa-spinner fa-pulse fa-2x fa-fw" *ngIf="loading"></i>
 </ng-template>
 
-<button type="button" class="btn btn-danger" (click)="open(content)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>
-<i class="fa fa-spinner fa-pulse fa-2x fa-fw" *ngIf="loading"></i>
+<button type="button" class="btn btn-outline-danger" (click)="open(content)"><i class="fa fa-trash-o" aria-hidden="true"></i></button>

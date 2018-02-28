@@ -455,8 +455,8 @@ export class AgregarDatosComponent implements OnInit {
 
         if(data.status == 200){
 
-          clearInterval(this.checkCoordVar);
           window.localStorage.removeItem("capaActiva");
+          window.localStorage.lastLayer = this.capaActiva.nombre;
           this.terminarAgregar({"nombre": this.capaActiva.nombre, "geojson": data.body});
         }
         else{
@@ -471,6 +471,11 @@ export class AgregarDatosComponent implements OnInit {
   }
 
   terminarAgregar(evento){
+
+    if(!evento){
+
+    }
+    clearInterval(this.checkCoordVar);
     this.agregarTerminado.emit(evento);
   }
 

@@ -9,6 +9,8 @@ import { CategoriasService } from '../../../services/categorias/categorias.servi
 })
 export class BuscarDatosComponent implements OnInit {
 
+  loading: boolean;
+
 	@Input() categorias;
 	@Input() capas;
 	@Input() capasActivas;
@@ -38,6 +40,12 @@ export class BuscarDatosComponent implements OnInit {
   	this.paginaActiva = [];
   	this.numeroPagina = 0;
   	this.capa = "";
+
+    if(window.localStorage.lastLayer){
+      this.capa = window.localStorage.lastLayer;
+      this.seleccionarCapa();
+    }
+
   }
 
 
@@ -74,6 +82,8 @@ export class BuscarDatosComponent implements OnInit {
   }
 
   seleccionarCapa(){
+
+    window.localStorage.lastLayer = this.capa;
 
   	let estruct = this.estructuras.find((element) =>{return element.nombre == this.capa});
   	this.estructuraActiva = estruct.atributos.filter((element) =>{return element.nombre != "geom"});

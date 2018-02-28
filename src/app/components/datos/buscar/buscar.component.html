@@ -1,39 +1,41 @@
 <div class="row">
 <div class="col-12">
 
+<h5>Administrar datos de Capas</h5>
 	<form class="form">
 		
 
 		<fieldset class="form-group">
-		<legend>Capas disponibles</legend>
 
 		<div class="row">
-			<div class="form-group col-1"></div>
 
 			<div class="form-group col">
-				<label class="control-label" for="capa">Capa</label>
 				<select class="form-control" name="capa" [(ngModel)]="capa" (change)="seleccionarCapa()">
 					<option value="" selected disabled>Seleccione Capa</option>
 					<option *ngFor="let cap of capas" [value]="cap.nombre">{{cap.nombre}}</option>
 				</select>
 			</div>			
 
-			<div class="col-1"></div>
 		</div>
 
-		<div class="row" *ngIf="capaPaginada.length>0">
+		<div class="row" *ngIf="capaPaginada.length==0&&capa!=''">
+			<div class="col">
+				<h5 class="text-center">Esta capa aun no tiene datos. <a href="#" (click)="comenzarRegistro()">Haga click aqui para agregar el primer dato</a></h5>
+			</div>
+		</div>	
+		
+		<div class="row short-mod" *ngIf="capaPaginada.length>0">
 
-			<div class="col"></div>
 			<div class="col">
 				
-				<table class="table table-striped table-hover table-responsive">
-				  <caption>Listado de Capas 
+				<table class="table table-hover table-responsive">
+				  <caption>Datos de la capa
 				  	<button type="button" class="btn btn-outline-info" (click)="retrocederPagina()" [disabled]="numeroPagina==0"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
 				  	<button type="button" class="btn btn-outline-info" (click)="avanzarPagina()" [disabled]="numeroPagina==capaPaginada.length-1"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
 				  	<button type="button" class="btn btn-outline-success" (click)="comenzarRegistro()"><i class="fa fa-plus" aria-hidden="true"></i></button>
 				  </caption>
 
-				  <thead class="thead-dark">
+				  <thead>
 				    <tr>
 				      <th scope="col">#</th>
 				      <th scope="col" *ngFor="let att of estructuraActiva">{{att.nombre}}</th>
@@ -52,7 +54,6 @@
 				</table>
 
 			</div>
-			<div class="col"></div>
 
 		</div>
 
