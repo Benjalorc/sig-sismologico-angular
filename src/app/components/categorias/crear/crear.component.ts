@@ -75,7 +75,7 @@ export class CrearCategoriasComponent implements OnInit {
         if(data.status == 201){
 
           console.log(data);
-          this.terminarCreacion();
+          this.registrarParametros(data.body);
         }
         else{
 
@@ -86,6 +86,49 @@ export class CrearCategoriasComponent implements OnInit {
         console.log(error);
       }
     );
+
+  }
+
+
+  registrarParametros(categoria){
+
+
+    this.categoriaNueva.atributos.forEach((element) =>{
+
+      let parametros = {
+
+        "categoria": categoria.id,
+        "nombre": element.nombre,
+        "tipo": element.tipo
+      }
+
+
+      this.categoriasService.crearParametros(parametros).subscribe(data =>{
+
+          if(data.status == 201){
+          
+            console.log("parametro registrado");
+            console.log(data.body);
+            if(data.body.nombre == this.categoriaNueva.atributos[this.categoriaNueva.atributos.length-1].nombre){
+              this.terminarCreacion();
+            }
+
+          }
+          else{
+
+
+          }
+        },
+        error => {
+          console.log(error);
+        }
+      );
+
+
+    });
+
+
+
 
   }
 

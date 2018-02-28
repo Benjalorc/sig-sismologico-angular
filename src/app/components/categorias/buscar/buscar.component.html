@@ -1,15 +1,14 @@
 <div class="row">
 <div class="col-12">
 
-	<div class="row">
+	<div class="row short-mod">
 		
-		<div class="col-1"></div>
 		<div class="col">
 			
-			<table class="table table-striped table-hover table-responsive">
+			<table class="table table-hover table-responsive">
 			  <caption>Listado de Categorias</caption>
 
-			  <thead class="thead-dark">
+			  <thead>
 			    <tr>
 			      <th scope="col">#</th>
 			      <th scope="col">Nombre</th>
@@ -24,15 +23,15 @@
 			      <th scope="row">{{i+1}}</th>
 			      <td>{{categoria.nombre}}</td>
 			      <td>{{categoria.descripcion}}</td>
-			      <td><button type="button" class="btn btn-info"><fa name="search"></fa></button></td>
-			      <td><button type="button" class="btn btn-warning" (click)="editarCategoria(categoria)"><fa name="pencil-square-o"></fa></button></td>
-			      <td><button type="button" class="btn btn-danger" (click)="eliminarCategoria(categoria)" [disabled]="!categoria.eliminable"><fa name="trash-o"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-info"><fa name="search"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-warning" (click)="editarCategoria(categoria)"><fa name="pencil-square-o"></fa></button></td>
+			      <td><button type="button" class="btn btn-outline-danger" (click)="eliminarCategoria(categoria)" [disabled]="!categoria.eliminable"><fa name="trash-o"></fa></button></td>
 			    </tr>			    
 			    <tr>
 			      <th scope="row">#</th>
-			      <td><input type="text" class="form-control" [(ngModel)]="categoriaNueva.nombre"></td>
-			      <td><textarea type="text" class="form-control" [(ngModel)]="categoriaNueva.descripcion"></textarea> </td>
-			      <td><button type="button" class="btn btn-success" (click)="agregarCategoria()"><fa name="plus"></fa></button></td>
+			      <td><input type="text" class="form-control input-sm" [(ngModel)]="categoriaNueva.nombre"></td>
+			      <td><textarea type="text" class="form-control input-sm" [(ngModel)]="categoriaNueva.descripcion"></textarea> </td>
+			      <td><button type="button" class="btn btn-outline-success" (click)="agregarCategoria()"><fa name="plus"></fa></button></td>
 			      <td></td>
 			      <td></td>
 			    </tr>
@@ -40,8 +39,6 @@
 			</table>
 
 		</div>
-		<div class="col-1"></div>
-
 
 	</div>
 

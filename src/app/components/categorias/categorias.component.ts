@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-categorias',
@@ -13,14 +14,30 @@ export class CategoriasComponent implements OnInit {
 
 	categoria: any;
 
-  constructor() { }
+  modalAbierta: boolean;
+
+  constructor(private modalService: NgbModal) { }
 
   ngOnInit() {
+
+    this.modalAbierta = false;
 
   	this.crearActivado = false;
   	this.editarActivado = false;
   	this.borrarActivado = false;
   }
+
+
+  open(content) {
+
+    this.modalService.open(content).result.then((result) => {
+      this.modalAbierta = true;
+    }, (reason) => {
+  
+    });
+
+  }
+
 
   agregarCategoria(obj){
   	this.categoria = obj;
