@@ -10,7 +10,7 @@ export class CategoriasService {
     constructor(
         public http: HttpClient
     ){
-        this.url = 'http://127.0.0.1:8000';
+        this.url = 'https://gis-entorno-benjamin-s-e.c9users.io:8080/categorias';
     }
 
 	obtener(): Observable<any>{
@@ -38,4 +38,17 @@ export class CategoriasService {
         return this.http.delete(this.url+'/'+categoria.id, {headers: headers,  observe: 'response'});
     }
  
+    crearParametros(parametros): Observable<any>{
+
+        let headers = new HttpHeaders().set('Content-Type','application/json');
+        return this.http.post('https://gis-entorno-benjamin-s-e.c9users.io:8080/parametros', parametros, {headers: headers,  observe: 'response'});
+    }   
+
+    eliminarParametros(id): Observable<any>{
+
+        let headers = new HttpHeaders().set('Content-Type','application/json');
+        return this.http.delete('https://gis-entorno-benjamin-s-e.c9users.io:8080/parametros/'+id, {headers: headers,  observe: 'response'});
+    }   
+
+
 }
