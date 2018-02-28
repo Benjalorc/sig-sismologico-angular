@@ -70,6 +70,10 @@ export class CrearCapasComponent implements OnInit {
   		return false;
   	}
 
+    if( this.capaNueva.atributos.find((element) =>{return element.tipo == "Pic"}) ){
+      return false;
+    }
+
   	this.capaNueva.atributos.push({nombre: this.propiedadNueva.nombre, tipo: this.propiedadNueva.tipo});
 
   	this.propiedadNueva.nombre = "";

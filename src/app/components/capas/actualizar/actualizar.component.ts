@@ -43,6 +43,9 @@ export class ActualizarCapasComponent implements OnInit {
 
     console.log(this.capa);
     console.log(this.categorias);
+
+    document.querySelector("body > ngb-modal-window > div").setAttribute("style","max-width: 600px;");
+
   }
 
   cambiarCategoria(){

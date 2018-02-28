@@ -40,53 +40,7 @@ export class BuscarCapasComponent implements OnInit {
 
   	this.cargarCapas();
 
-/*
-	this.capas = [
-		{
-			categoria: "Categoria 1",
-			nombre: "Capa 1",
-			geometria: "PUNTO",
-			eliminable: false,
-			propiedades: []
-		},
-		{
-			categoria: "Categoria 1",
-			nombre: "Capa 2",
-			geometria: "POLIGONO",
-			eliminable: false,
-			propiedades: []
-		},
-		{
-			categoria: "Categoria 2",
-			nombre: "Capa 3",
-			geometria: "LINEA",
-			eliminable: false,
-			propiedades: []
-		},
-		{
-			categoria: "Categoria 2",
-			nombre: "Capa 4",
-			geometria: "POLIGONO",
-			eliminable: true,
-			propiedades: []
-		},
-		{
-			categoria: "Categoria 3",
-			nombre: "Capa 5",
-			geometria: "PUNTO",
-			eliminable: false,
-			propiedades: []
-		},
-		{
-			categoria: "Categoria 3",
-			nombre: "Capa 6",
-			geometria: "LINEA",
-			eliminable: true,
-			propiedades: []
-		}
-	]
-*/
-
+  	document.querySelector("body > ngb-modal-window > div").setAttribute("style","max-width: 700px;");
 
   }//Cierre ngOnInit
 

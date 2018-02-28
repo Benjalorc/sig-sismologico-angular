@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CategoriasService } from '../../services/categorias/categorias.service'
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-capas',
@@ -15,9 +16,13 @@ export class CapasComponent implements OnInit {
 	capa: any;
   categorias: any;
 
-  constructor(private categoriasService: CategoriasService) { }
+  modalAbierta: boolean;
+
+  constructor(private categoriasService: CategoriasService, private modalService: NgbModal){ }
 
   ngOnInit() {
+
+    this.modalAbierta = false;
 
     this.categorias = [];
 
@@ -39,6 +44,16 @@ export class CapasComponent implements OnInit {
   	this.crearActivado = false;
   	this.editarActivado = false;
   	this.borrarActivado = false;
+  }
+
+  open(content) {
+
+    this.modalService.open(content).result.then((result) => {
+      this.modalAbierta = true;
+    }, (reason) => {
+  
+    });
+
   }
 
   agregarCapa(obj){
