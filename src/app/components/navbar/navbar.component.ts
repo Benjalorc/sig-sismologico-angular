@@ -150,5 +150,34 @@ export class NavbarComponent implements OnInit {
       }
     );
   }
+/*
+  shout(mensaje, estilo, tiempo){
+    this.flashMessage.show(mensaje, { cssClass: estilo, timeout: tiempo });
+  }
 
+  verificarElementos(el){
+
+    let ready = false;
+    let mensaje = "";
+
+      this.shout(mensaje, "alert-warning", 2000);
+    this.flashMessage.show(mensaje, { cssClass: "alert-danger", timeout: 5000 });
+    alert("Auxilio");
+    
+    if(el == 'cap'){
+      if(this.capasFiltradas.length > 0){ready = true;}
+      else{ mensaje = "Elija una categoria primero" }
+    }
+
+    if(el == 'cat'){
+      if(this.categorias.length > 0){ ready = true; }
+      else{ mensaje = "Aun no hay elementos de esta lista, espere un momento" }
+    }
+
+    if(!ready){
+      this.shout(mensaje, "alert-warning", 2000);
+    }
+
+  }
+*/
 }
