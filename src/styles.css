@@ -3,7 +3,7 @@ flash-messages{
   position: fixed;
   top: 70px;
   left: 0;
-  z-index: 2000;
+  z-index: 5000;
   padding: 3px 1%;
 }
 
@@ -14,8 +14,14 @@ i.fa-spinner{
   z-index: 2000;
 }
 
+html {
+  position: relative;
+  min-height: 100%;
+}
 
 body {
+  padding-top: 3.5rem;
+  margin-bottom: 60px; /* Margin bottom by footer height */
   background-color: #ddd;
 }
 
@@ -50,4 +56,9 @@ fieldset legend {
     border-radius: 5px;
     box-shadow: 0 0 0 5px #ddd;
     margin-left: 20px;
+}
+
+.short-mod{
+  overflow: auto; 
+  max-height: 200px;  
 }
