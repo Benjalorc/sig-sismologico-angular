@@ -10,7 +10,7 @@ export class CapasService {
     constructor(
         public http: HttpClient
     ){
-        this.url = 'http://127.0.0.1:8000/capas';
+        this.url = 'https://gis-entorno-benjamin-s-e.c9users.io:8080/capas';
     }
 
     obtener(): Observable<any>{
@@ -24,11 +24,8 @@ export class CapasService {
 
     importar(contenido): Observable<any>{
 
-        let input = new FormData();
-        input.append('file', file, file.name);
-        let headers = new HttpHeaders().set('Content-Type','multipart/form-data');         
-        return this.http.post('http://127.0.0.1:8000/importar', input, {headers: headers, observe: 'response'});
-
+        let headers = new HttpHeaders().set('Content-Type','application/json');         
+        return this.http.post(this.url+'/importar', contenido, {headers: headers, observe: 'response'});
     }
 
     agregar(capa): Observable<any>{
@@ -40,13 +37,13 @@ export class CapasService {
     crearAtributos(atributos): Observable<any>{
 
         let headers = new HttpHeaders().set('Content-Type','application/json');
-        return this.http.post('http://127.0.0.1:8000/atributos', atributos, {headers: headers,  observe: 'response'});
+        return this.http.post('https://gis-entorno-benjamin-s-e.c9users.io:8080/atributos', atributos, {headers: headers,  observe: 'response'});
     }   
 
     eliminarAtributos(id): Observable<any>{
 
         let headers = new HttpHeaders().set('Content-Type','application/json');
-        return this.http.delete('http://127.0.0.1:8000/atributos/'+id, {headers: headers,  observe: 'response'});
+        return this.http.delete('https://gis-entorno-benjamin-s-e.c9users.io:8080/atributos/'+id, {headers: headers,  observe: 'response'});
     }   
 
 
